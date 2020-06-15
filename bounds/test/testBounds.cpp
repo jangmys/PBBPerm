@@ -59,12 +59,6 @@ int main(int argc,char **argv){
         }
     }
 
-//
-//     pbab *pbb;
-//     instance_abstract *inst;
-
-
-
     int costs[2];
 
     //a permutation
