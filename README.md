@@ -42,6 +42,12 @@ The `./multicore` folder contains the CPU-only IVM-based B&B. It can be run in
 
 ## Distributed (MPI)
 
+initmodes
+
+checkpoints
+
+
+
 
 
 ## Other options...
@@ -59,3 +65,8 @@ This is done in pbab::buildInitialUB.
 
 #### Heuristic
 Currently only for FSP
+
+In addition to initial heuristic, one may run heuristic searches in parallel to the exploration
+1: none
+2: treeSearch
+3: Iterated Local
