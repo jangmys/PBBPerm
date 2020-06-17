@@ -55,3 +55,7 @@ Initialize at
 This is done in pbab::buildInitialUB.
 
 #### Sorting sibling nodes
+
+
+#### Heuristic
+Currently only for FSP
