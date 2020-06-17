@@ -8,18 +8,18 @@
 #include <unistd.h>
 #include <mpi.h>
 
-#include "../../common/include/macros.h"
-#include "../../common/include/pbab.h"
-#include "../../common/include/solution.h"
-#include "../../common/include/ttime.h"
-#include "../../common/include/log.h"
+#include "macros.h"
+#include "pbab.h"
+#include "solution.h"
+#include "ttime.h"
+#include "log.h"
 
-#include "../include/worker_mc.h"
-#include "../include/fact_work.h"
-#include "../include/work.h"
+#include "worker_mc.h"
+#include "fact_work.h"
+#include "work.h"
 #include "communicator.h"
 
-#include "../../sequential/include/matrix_controller.h"
+#include "../../multicore/include/matrix_controller.h"
 
 
 

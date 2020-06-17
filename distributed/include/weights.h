@@ -1,3 +1,6 @@
+#ifndef weightS_H
+#define weightS_H
+
 #include <string>
 #include <iostream>
 #include <sstream>
@@ -7,8 +10,6 @@
 
 #define MAX_JOBS 800
 
-#ifndef weightS_H
-#define weightS_H
 class pbab;
 
 class weights
@@ -18,4 +19,5 @@ public:
     mpz_class W[MAX_JOBS+1][MAX_JOBS+1];
     weights(pbab* pbb);
 };
+
 #endif

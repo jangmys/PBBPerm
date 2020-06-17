@@ -1,9 +1,9 @@
-#include "../../common/include/log.h"
+#include "log.h"
 
-#include "../../common/include/arguments.h"
-#include "../../common/include/pbab.h"
-#include "../../common/include/ttime.h"
-#include "../../common/include/solution.h"
+#include "arguments.h"
+#include "pbab.h"
+#include "ttime.h"
+#include "solution.h"
 
 //INCLUDE INSTANCES
 #include "../../bounds/include/libbounds.h"
@@ -11,12 +11,12 @@
 #include <mpi.h>
 
 #ifdef USE_GPU
-#include "../headers/worker_gpu.h"
+#include "worker_gpu.h"
 #else
-#include "../headers/worker_mc.h"
+#include "worker_mc.h"
 #endif
 
-#include "../headers/master.h"
+#include "master.h"
 
 int
 main(int argc, char ** argv)

@@ -13,16 +13,16 @@
 #include <pthread.h>
 #include <stdlib.h>
 
-#include "../headers/work.h"
-#include "../../common/headers/ttime.h"
-#include "../../common/headers/pbab.h"
-#include "../../common/headers/arguments.h"
-#include "../../common/headers/solution.h"
+#include "work.h"
+#include "ttime.h"
+#include "pbab.h"
+#include "arguments.h"
+#include "solution.h"
 
-#include "../../common/headers/log.h"
+#include "log.h"
 
-#include "../headers/works.h"
-#include "../headers/master.h"
+#include "works.h"
+#include "master.h"
 
 // =======================================================
 // default

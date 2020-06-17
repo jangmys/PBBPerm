@@ -2,9 +2,9 @@
 #include <iostream>
 #include <sstream>
 
-#include "../../common/headers/pbab.h"
+#include "pbab.h"
 
-#include "../headers/weights.h"
+#include "weights.h"
 
 //0 (N-1)!  2*(N-1)!    3*(N-1)!    ... (N-1)*(N-1)! N*(N-1)!
 //...

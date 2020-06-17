@@ -1,10 +1,10 @@
-#include <string.h>
-#include <mpi.h>
-
-#include <memory>
-
 #ifndef COMMUNICATOR_H
 #define COMMUNICATOR_H
+
+#include <string.h>
+#include <mpi.h>
+#include <memory>
+
 
 class pbab;
 class work;

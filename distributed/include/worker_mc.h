@@ -1,8 +1,8 @@
-#include <atomic>
-#include <memory>
-
 #ifndef WORKER_MC_H
 #define WORKER_MC_H
+
+#include <atomic>
+#include <memory>
 
 class pbab;
 class communicator;

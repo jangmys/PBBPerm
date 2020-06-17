@@ -1,8 +1,9 @@
+#ifndef WORKER_H
+#define WORKER_H
+
 #include <atomic>
 #include <memory>
 
-#ifndef WORKER_H
-# define WORKER_H
 
 class pbab;
 class communicator;

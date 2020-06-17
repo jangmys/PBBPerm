@@ -1,18 +1,17 @@
 #include <unistd.h>
 #include <mpi.h>
 
-#include "../headers/works.h"
-#include "../headers/master.h"
-#include "../headers/work.h"
-#include "../headers/communicator.h"
+#include "works.h"
+#include "master.h"
+#include "work.h"
+#include "communicator.h"
 
-#include "../../common/headers/macros.h"
-#include "../../common/headers/solution.h"
-#include "../../common/headers/pbab.h"
-#include "../../common/headers/ttime.h"
+#include "macros.h"
+#include "solution.h"
+#include "pbab.h"
+#include "ttime.h"
 
-#include "../../common/headers/log.h"
-
+#include "log.h"
 
 #include "gmp.h"
 #include "gmpxx.h"
@@ -204,7 +203,7 @@ void master::shutdown() {
             // }
         }else{
         	std::cout<<"Not improved..."<<std::endl;
-        	std::cout<<"Optimal makespan is >= "<<pbb->sltn->bestcost<<" (initial solution) "<<std::endl;
+        	std::cout<<"Optimal makespan is >= "<<pbb->sltn->cost<<" (initial solution) "<<std::endl;
         }
     }else{
         return;
@@ -275,7 +274,7 @@ master::run()
                 }else{
                     //BEST
                     //request processed...
-                    pbb->sltn->getBestSolution(sol_buf->bestpermut,sol_buf->bestcost);
+                    pbb->sltn->getBestSolution(sol_buf->perm,sol_buf->cost);
                     comm->send_sol(sol_buf, status.MPI_SOURCE, NIL);
                     //MPI_Send(&pbb->sltn->bestcost,1,MPI_INT,status.MPI_SOURCE,NIL,MPI_COMM_WORLD);
                 }
@@ -288,10 +287,10 @@ master::run()
                 solution* candidate=new solution(pbb);
                 comm->recv_sol(candidate, status.MPI_SOURCE, BEST, &status);
 
-                if(pbb->sltn->update(candidate->bestpermut,candidate->bestcost))
+                if(pbb->sltn->update(candidate->perm,candidate->cost))
                 {
                     pbb->foundSolution=true;
-                    printf("\t\tmaster_sol: %d\n",pbb->sltn->bestcost);
+                    printf("\t\tmaster_sol: %d\n",pbb->sltn->cost);
 					pbb->sltn->save();
                 }
                 if(end){
@@ -299,7 +298,7 @@ master::run()
                     MPI_Send(&aaa,1,MPI_INT,status.MPI_SOURCE,END,MPI_COMM_WORLD);
                 }else{
                     //if updatedBest
-                    MPI_Send(&pbb->sltn->bestcost,1,MPI_INT,status.MPI_SOURCE,BEST,MPI_COMM_WORLD);
+                    MPI_Send(&pbb->sltn->cost,1,MPI_INT,status.MPI_SOURCE,BEST,MPI_COMM_WORLD);
                 }
                 break;
             }

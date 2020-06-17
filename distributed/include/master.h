@@ -1,3 +1,6 @@
+#ifndef MASTER_H
+#define MASTER_H
+
 #include <atomic>
 #include <memory>
 #include <climits>
@@ -6,8 +9,6 @@
 #include "gmp.h"
 #include "gmpxx.h"
 
-#ifndef MASTER_H
-#define MASTER_H
 
 
 class pbab;

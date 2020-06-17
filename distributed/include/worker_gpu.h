@@ -1,8 +1,8 @@
-#include <atomic>
-#include <memory>
-
 #ifndef WORKER_GPU_H
 #define WORKER_GPU_H
+
+#include <atomic>
+#include <memory>
 
 #include "../../common/headers/log.h"
 #include "../../gpu/headers/gpubb.h"

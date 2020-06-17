@@ -1,4 +1,4 @@
-#include "../headers/interval.h"
+#include "interval.h"
 
 //"null"-interval
 interval::interval()

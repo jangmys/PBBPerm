@@ -8,19 +8,19 @@
 #include <unistd.h>
 #include <mpi.h>
 
-#include "../../common/headers/macros.h"
-#include "../../common/headers/pbab.h"
-#include "../../common/headers/solution.h"
-#include "../../common/headers/ttime.h"
-#include "../../common/headers/log.h"
+#include "macros.h"
+#include "pbab.h"
+#include "solution.h"
+#include "ttime.h"
+#include "log.h"
 
-#include "../../multicoreLL/headers/tree.h"
-#include "../../multicoreLL/headers/treeheuristic.h"
+#include "../../multicoreLL/include/tree.h"
+#include "../../multicoreLL/include/treeheuristic.h"
 
-#include "../headers/worker.h"
-#include "../headers/fact_work.h"
-#include "../headers/work.h"
-#include "../headers/communicator.h"
+#include "worker.h"
+#include "fact_work.h"
+#include "work.h"
+#include "communicator.h"
 
 worker::worker(pbab * _pbb)
 {
@@ -52,7 +52,7 @@ worker::worker(pbab * _pbb)
     pthread_cond_init(&cond_trigger, NULL);
 
     local_sol=new solution(pbb);
-    // for(int i=0;i<size;i++)local_sol->bestpermut[i]=i;
+    // for(int i=0;i<size;i++)local_sol->perm[i]=i;
 
     reset();
 }
@@ -168,8 +168,8 @@ comm_thread(void * arg)
             // printf("=== BEST\n");fflush(stdout);
             w->newBest = false;
             // get sol
-            w->pbb->sltn->getBestSolution(w->comm->best_buf->bestpermut,
-                w->comm->best_buf->bestcost);// lock on pbb->sltn
+            w->pbb->sltn->getBestSolution(w->comm->best_buf->perm,
+                w->comm->best_buf->cost);// lock on pbb->sltn
             w->comm->send_sol(w->comm->best_buf, 0, BEST);
             // printf("SEND BEST %d ...\n",w->comm->rank   );fflush(stdout);//DEBUG
         }
@@ -214,9 +214,9 @@ comm_thread(void * arg)
             case NIL:
             {
                 w->comm->recv_sol(mastersol, 0, NIL, &status);
-                // printf("receive NIL=== %d ===\n",w->pbb->sltn->bestcost );fflush(stdout);
+                // printf("receive NIL=== %d ===\n",w->pbb->sltn->cost );fflush(stdout);
                 // MPI_Recv(&masterbest, 1, MPI_INT, 0, NIL, MPI_COMM_WORLD, &status);
-                w->pbb->sltn->update(mastersol->bestpermut,mastersol->bestcost);
+                w->pbb->sltn->update(mastersol->perm,mastersol->cost);
                 break;
             }
             case SLEEP:
@@ -371,7 +371,7 @@ heu_thread2(void * arg)
             FILE_LOG(logINFO)<<"HeuristicBest "<<c<<"\t"<<*(w->pbb->sltn);
             w->newBest=true;
         }
-        if(c<w->local_sol->bestcost){
+        if(c<w->local_sol->cost){
             w->local_sol->update(s->schedule,c);
             FILE_LOG(logINFO)<<"LocalBest "<<c<<"\t"<<*(w->local_sol);
         }
@@ -435,23 +435,23 @@ heu_thread(void * arg)
         c=ils->runIG(s); //ils->makespan(s);
 
         pthread_mutex_lock_check(&w->mutex_solutions);
-        FILE_LOG(logINFO)<<"Heuristic Sol "<<c<<" Best: "<<w->pbb->sltn->bestcost;
+        FILE_LOG(logINFO)<<"Heuristic Sol "<<c<<" Best: "<<w->pbb->sltn->cost;
         // for(int i=0;i<N;i++)
             // FILE_LOG(logINFO)<<s->schedule[i];
 
         // printf("%d ",s->schedule[i]);
-        // // printf("\t %d %d\n",c,w->local_sol->bestcost);
-        // printf("\t %d %d\n",c,w->pbb->sltn->bestcost);
+        // // printf("\t %d %d\n",c,w->local_sol->cost);
+        // printf("\t %d %d\n",c,w->pbb->sltn->cost);
         pthread_mutex_unlock(&w->mutex_solutions);
 
-        if (c<w->pbb->sltn->bestcost){
+        if (c<w->pbb->sltn->cost){
             w->pbb->sltn->update(s->schedule,c);
             // printf("hhh %d\t",c);
             // s->print();
             FILE_LOG(logINFO)<<"HeuristicBest "<<c<<"\t"<<*(w->pbb->sltn);
             w->newBest=true;
         }
-        if(c<w->local_sol->bestcost){
+        if(c<w->local_sol->cost){
             w->local_sol->update(s->schedule,c);
             FILE_LOG(logINFO)<<"LocalBest "<<c<<"\t"<<*(w->local_sol);
         }

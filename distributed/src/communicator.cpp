@@ -1,10 +1,10 @@
-perm#include "../../common/headers/macros.h"
-#include "../../common/headers/solution.h"
-#include "../../common/headers/pbab.h"
-#include "../../common/headers/ttime.h"
+#include "macros.h"
+#include "solution.h"
+#include "pbab.h"
+#include "ttime.h"
 
-#include "../headers/communicator.h"
-#include "../headers/work.h"
+#include "communicator.h"
+#include "work.h"
 
 //construct communicator for M intervals of size pbb->size
 communicator::communicator(int _M,pbab* _pbb){
@@ -127,7 +127,7 @@ void communicator::send_sol(solution* sol, int dest, int tag)
 {
     int *buf = new int[sol->size+1];
 
-    buf[0]=sol->bestcost;
+    buf[0]=sol->cost;
     memcpy(&buf[1], sol->perm, sol->size*sizeof(int));
 
     MPI_Send(buf, sol->size+1, MPI_INT, dest, tag, MPI_COMM_WORLD);
@@ -140,7 +140,7 @@ void communicator::recv_sol(solution* sol, int src, int tag, MPI_Status* status)
 
     MPI_Recv(buf, sol->size+1, MPI_INT, src, tag, MPI_COMM_WORLD, status);
 
-    sol->bestcost=buf[0];
+    sol->cost=buf[0];
     memcpy(sol->perm, &buf[1], sol->size*sizeof(int));
 
     delete[]buf;

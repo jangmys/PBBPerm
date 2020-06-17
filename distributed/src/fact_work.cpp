@@ -1,12 +1,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../../common/headers/pbab.h"
-#include "../../common/headers/log.h"
+#include "pbab.h"
+#include "log.h"
 
-#include "../headers/weights.h"
-#include "../headers/work.h"
-#include "../headers/fact_work.h"
+#include "weights.h"
+#include "work.h"
+#include "fact_work.h"
 
 class weights;
 

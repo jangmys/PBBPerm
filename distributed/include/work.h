@@ -1,18 +1,18 @@
-//===============================================================================================
-#include <pthread.h>
-//#include "../headers/peer.h"
-#include "../headers/interval.h"
+#ifndef WORK_H
+#define WORK_H
 
+//=====================================================
+#include <pthread.h>
 #include <iostream>
 #include <vector>
 #include <queue>
 #include <memory>
 
+#include "interval.h"
+
 #include "gmp.h"
 #include "gmpxx.h"
 
-#ifndef WORK_H
-#define WORK_H
 class peer;
 class pbab;
 class interval;

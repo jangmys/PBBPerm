@@ -1,4 +1,7 @@
-//===============================================================================================
+#ifndef WORKS_H
+#define WORKS_H
+
+//=====================================================
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -11,13 +14,11 @@
 #include <sys/time.h>
 #include <time.h>
 
-#include "../../common/headers/solution.h"
+#include "solution.h"
 
 #include "gmp.h"
 #include "gmpxx.h"
 
-#ifndef WORKS_H
-#define WORKS_H
 
 class solution;
 class work;

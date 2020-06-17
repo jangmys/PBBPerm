@@ -1,11 +1,11 @@
 #include <pthread.h>
-#include "../../common/headers/ttime.h"
-#include "../../common/headers/pbab.h"
-#include "../../common/headers/solution.h"
-#include "../../common/headers/log.h"
+#include "ttime.h"
+#include "pbab.h"
+#include "solution.h"
+#include "log.h"
 
-#include "../headers/work.h"
-#include "../headers/master.h"
+#include "work.h"
+#include "master.h"
 
 //Constructeurs ===================
 //===============================================================
