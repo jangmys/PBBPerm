@@ -17,6 +17,7 @@ public:
     static int heuristic_threads;
     static int heuristic_iters;
     static int initial_heuristic_iters;
+    static char heuristic_type;
 
     static int branchingMode;
     static int boundMode;

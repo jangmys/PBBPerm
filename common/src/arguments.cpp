@@ -4,6 +4,8 @@
 
 int arguments::heuristic_threads = 1;
 int arguments::heuristic_iters   = 1;
+int arguments::initial_heuristic_iters = 100;
+char arguments::heuristic_type = 'n';
 
 int arguments::boundMode     = 2;
 int arguments::branchingMode = 3;
@@ -48,7 +50,6 @@ bool arguments::truncateSearch = false;
 int arguments::cut_top         = 99999;
 int arguments::cut_bottom      = -1;
 
-int arguments::initial_heuristic_iters = 100;
 
 int arguments::initial_work = 3;
 
@@ -130,6 +131,7 @@ arguments::readIniFile()
     heuristic_threads       = reader.GetInteger("heuristic", "heuristic_threads", 1);
     initial_heuristic_iters = reader.GetInteger("heuristic", "initial_heuristic_iters", 1000);
     heuristic_iters         = reader.GetInteger("heuristic", "heuristic_iters", 1000);
+    heuristic_type         = reader.Get("heuristic", "heuristic_type", "n")[0];
 
     initial_work = reader.GetInteger("distributed", "initialWork", 3);
 
