@@ -1,5 +1,5 @@
 ###############################################################################
-INCLUDE_DIR += include
+INCLUDE_DIR += include ../common/include
 LIBRARY_DIR +=
 LDFLAGS += $(addprefix -L,$(LIBRARY_DIR))
 
@@ -7,7 +7,7 @@ BUILD=./build/
 #BINDIR=./bin/
 SRCDIR=./src/
 SRCDIR2=../common/src/
-HDRS=./headers/
+HDRS=./include/
 
 DEBUG = -g -pg -ftrapv
 LIB=-ldl -lpthread -lm -lgmp -lgmpxx -lstdc++ -L../bounds/lib -lbounds -L../heuristic -lig

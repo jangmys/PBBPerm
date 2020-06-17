@@ -85,8 +85,8 @@ main(int argc, char ** argv)
                 struct timespec tstart, tend;
                 clock_gettime(CLOCK_MONOTONIC, &tstart);
 
-                mstr->initWorks(2);//2 = read from file
-                // mstr->initWorks(3);//3 = cut initial interval in nProc pieces
+                // mstr->initWorks(2);//2 = read from file
+                mstr->initWorks(arguments::initial_work);//3 = cut initial interval in nProc pieces
 
                 MPI_Barrier(MPI_COMM_WORLD);
 

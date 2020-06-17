@@ -29,9 +29,11 @@ public:
     static int balancingv;
     static bool mc_timeout;
 
-    //initialization
+    //UB initialization
     static int init_mode;
     static int initial_ub;
+
+    static int initial_work;
 
     static int sortNodes;
     static int nodePriority;

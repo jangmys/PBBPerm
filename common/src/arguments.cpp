@@ -50,6 +50,8 @@ int arguments::cut_bottom      = -1;
 
 int arguments::initial_heuristic_iters = 100;
 
+int arguments::initial_work = 3;
+
 /***********************************************************************/
 /***********************************************************************/
 /***********************************************************************/
@@ -128,6 +130,9 @@ arguments::readIniFile()
     heuristic_threads       = reader.GetInteger("heuristic", "heuristic_threads", 1);
     initial_heuristic_iters = reader.GetInteger("heuristic", "initial_heuristic_iters", 1000);
     heuristic_iters         = reader.GetInteger("heuristic", "heuristic_iters", 1000);
+
+    initial_work = reader.GetInteger("distributed", "initialWork", 3);
+
 } // arguments::readIniFile
 
 inline bool
