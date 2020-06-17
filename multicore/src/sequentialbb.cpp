@@ -1,7 +1,7 @@
-#include "../../common/include/pbab.h"
-#include "../../common/include/solution.h"
+#include "pbab.h"
+#include "solution.h"
 
-#include "../include/sequentialbb.h"
+#include "sequentialbb.h"
 
 sequentialbb::sequentialbb(pbab *_pbb)
 {
@@ -107,30 +107,6 @@ sequentialbb::initAtInterval(int * pos, int * end)
     }
 }
 
-void
-sequentialbb::jumpback(int level)
-{
-    std::vector<int> pv(size);
-    std::vector<int> ev(size);
-
-    for(int i=0;i<size;i++){
-        pv[i]=IVM->posVect[i];
-    }
-
-    while(IVM->line>level){
-        IVM->goUp();
-    }
-
-    for(int i=0;i<=IVM->line;i++){
-        ev[i]=IVM->posVect[i];
-    }
-    for(int i=IVM->line+1;i<size;i++){
-        ev[i]=size-i-1;
-    }
-
-    pbb->remain.push_back(std::make_tuple(pv,ev));
-}
-
 bool sequentialbb::next()
 {
     // get best (shared)
@@ -143,13 +119,6 @@ bool sequentialbb::next()
         if (IVM->lineEndState()) {
             //backtrack...
             IVM->goUp();
-
-            //jumpback
-            if(arguments::truncateSearch && \
-                IVM->line>arguments::truncateDepth){
-                    jumpback(arguments::truncateDepth);
-                }
-
             continue;
         } else if (IVM->pruningCellState()) {
             IVM->goRight();

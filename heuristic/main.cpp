@@ -2,7 +2,7 @@
 // #include "../bounds/headers/instance_flowshop.h"
 
 #include "../common/include/misc.h"
-#include "../common/include/permutation.h"
+// #include "../common/include/permutation.h"
 
 #include "./include/fastNEH.h"
 #include "./include/IG.h"

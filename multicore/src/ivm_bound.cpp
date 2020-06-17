@@ -285,8 +285,8 @@ ivm_bound::boundRoot(ivm* IVM){
 
         //first line of Matrix
         for(int i=0; i<size; i++){
-            node->schedule[i] = pbb->root_sltn->bestpermut[i];
-            IVM->jobMat[i] = pbb->root_sltn->bestpermut[i];
+            node->schedule[i] = pbb->root_sltn->perm[i];
+            IVM->jobMat[i] = pbb->root_sltn->perm[i];
             // node->schedule[i] = i;
             // IVM->jobMat[i] = i;
         }
@@ -563,7 +563,7 @@ ivm_bound::completeSchedule(const int job,const int order)
 
         node->schedule[i++]=job;
         for(int k=0; k<size; k++){
-            j=pbb->root_sltn->bestpermut[k];
+            j=pbb->root_sltn->perm[k];
             if(fixedJobs[j]==1)continue;
             node->schedule[i++]=j;
         }
@@ -573,7 +573,7 @@ ivm_bound::completeSchedule(const int job,const int order)
         i=node->limit1+1;
 
         for(int k=0; k<size; k++){
-            j=pbb->root_sltn->bestpermut[k];
+            j=pbb->root_sltn->perm[k];
             if(fixedJobs[j]==1)continue;
             node->schedule[i++]=j;
         }

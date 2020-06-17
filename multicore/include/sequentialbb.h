@@ -1,14 +1,9 @@
 #ifndef SEQUENTIALBB_H_
 #define SEQUENTIALBB_H_
 
-// #include "../../common/headers/pbab.h"
-
 #include "../include/ivm.h"
 #include "../include/ivm_bound.h"
-#include "../../common/include/ttime.h"
-
-
-#include "../../heuristic/include/IG.h"
+// #include "../../common/include/ttime.h"
 
 #include "../../bounds/include/libbounds.h"
 
@@ -26,8 +21,6 @@ public:
 
     void run();
     void run(int* firstRow);
-
-    void jumpback(int level);
 
     bool next();
     void clear();

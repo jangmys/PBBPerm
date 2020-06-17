@@ -1,9 +1,9 @@
 #include <limits.h>
 
-#include "../../common/headers/misc.h"
-#include "../headers/fastNEH.h"
+#include "../../common/include/misc.h"
 
-#include "../headers/fastinsertremove.h"
+#include "../include/fastNEH.h"
+#include "../include/fastinsertremove.h"
 
 fastNEH::fastNEH()
 {

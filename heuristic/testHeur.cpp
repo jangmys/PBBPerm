@@ -1,14 +1,14 @@
-#include "../bounds/headers/instance_abstract.h"
-#include "../bounds/headers/instance_flowshop.h"
+#include "../bounds/include/instance_abstract.h"
+#include "../bounds/include/instance_flowshop.h"
 
-#include "../common/headers/misc.h"
-#include "../common/headers/permutation.h"
+#include "../common/include/misc.h"
+// #include "../common/include/permutation.h"
 
-#include "./headers/fastNEH.h"
-#include "./headers/IG.h"
-#include "./headers/RIS.h"
+#include "./include/fastNEH.h"
+#include "./include/IG.h"
+// #include "./include/RIS.h"
 
-#include "./headers/fspnhoods.h"
+#include "./include/fspnhoods.h"
 
 #include <iostream>
 #include <random>

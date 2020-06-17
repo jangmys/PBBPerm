@@ -13,6 +13,7 @@
 class arguments
 {
 public:
+    //heuristic
     static int heuristic_threads;
     static int heuristic_iters;
     static int initial_heuristic_iters;
@@ -28,41 +29,48 @@ public:
     static int balancingv;
     static bool mc_timeout;
 
+    //initialization
     static int init_mode;
     static int initial_ub;
+
+    static int sortNodes;
+    static int nodePriority;
 
     static int nbivms_mc;//la m^me ...
     static int nbivms_gpu;//chose ...
 
+    //problem
     static char problem[50];
     static char inst_name[50];
+
     static char inifile[50];
 
-    static int sortNodes;
+    //FSP - johnson bound
     static bool earlyStopJohnson;
     static int johnsonPairs;
-    static int nodePriority;
 
     static int singleNodeDS;
 
     static bool findAll;
-    static bool printSolutions;
     static bool localSearchOnLeaves;
     static bool intermediateLocalSearch;
 
+    //verbosity
+    static bool printSolutions;
+
+    //truncate...
     static bool truncateSearch;
     static int truncateDepth;
-
     static int cut_bottom;
     static int cut_top;
+
+    //work stealing
+    static char mc_ws_select;
+    static char gpu_ws_strategy;
 
     static void readIniFile();
     static bool parse_arguments(int argc, char **argv);
     static void initialize();
-
-    static char mc_ws_select;
-    static char gpu_ws_strategy;
-
 };
 
 #endif

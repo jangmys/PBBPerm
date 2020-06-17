@@ -1,5 +1,5 @@
 ###############################################################################
-INCLUDE_DIR += ../bounds/include
+INCLUDE_DIR += ../bounds/include ../common/include ./include
 LIBRARY_DIR +=
 LDFLAGS += $(addprefix -L,$(LIBRARY_DIR))
 
@@ -42,6 +42,9 @@ $(BUILD)%.o: $(SRCDIR2)%.cpp
 
 ../bounds/lib/libbounds.a:
 	@cd "../bounds" && "$(MAKE)" -f  "makefile" && cd ../multicore
+
+../heuristic/libig.a:
+	@cd "../heuristic" && "$(MAKE)" -f  "heuristic.mk" && cd ../multicore
 
 clean:
 	$(RM) -r $(BUILD) $(EXEC) *.o bb

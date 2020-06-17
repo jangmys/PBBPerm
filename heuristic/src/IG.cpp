@@ -1,7 +1,7 @@
-#include "../../common/headers/permutation.h"
-#include "../../common/headers/subproblem.h"
+// #include "../../common/include/permutation.h"
+#include "../../common/include/subproblem.h"
 
-#include "../headers/IG.h"
+#include "../include/IG.h"
 
 IG::IG(instance_abstract * inst)
 {

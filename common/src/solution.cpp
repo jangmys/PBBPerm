@@ -9,13 +9,13 @@ solution::solution(pbab * _pbb)
     pbb  = _pbb;
     size = pbb->size;
 
-    bestpermut = (int *)calloc(pbb->size,sizeof(int));
+    perm = (int *)calloc(pbb->size,sizeof(int));
     for(int i=0;i<size;i++)
     {
-        bestpermut[i]=i;
+        perm[i]=i;
     }
 
-    bestcost   = INT_MAX;
+    cost   = INT_MAX;
     newBest    = false;
 
     pthread_mutexattr_t attr;
@@ -25,46 +25,42 @@ solution::solution(pbab * _pbb)
 }
 
 int
-solution::update(int * candidate, int cost)
+solution::update(const int * candidate, const int _cost)
 {
     int ret = 0;
-
     pthread_mutex_lock_check(&mutex_sol);
-    if (cost < bestcost) {
+    if (_cost < cost) {
         ret = 1;
         newBest  = true;
-        bestcost = cost;
+        cost = _cost;
         if (candidate) {
-            for (int i = 0; i < pbb->size; i++) bestpermut[i] = candidate[i];
+            for (int i = 0; i < pbb->size; i++) perm[i] = candidate[i];
         }
     }
     pthread_mutex_unlock(&mutex_sol);
-    // print();
     return ret;
 }
 
 int
-solution::updateCost(int cost)
+solution::updateCost(const int _cost)
 {
     int ret = 0;
-
     pthread_mutex_lock_check(&mutex_sol);
-    if (cost < bestcost) {
+    if (_cost < cost) {
         ret = 1;
-        bestcost = cost;
+        cost = _cost;
     }
     pthread_mutex_unlock(&mutex_sol);
-    // print();
     return ret;
 }
 
 void
-solution::getBestSolution(int *perm, int &cost)
+solution::getBestSolution(int *_perm, int &_cost)
 {
     pthread_mutex_lock_check(&mutex_sol);
-    cost = bestcost;
+    _cost = cost;
     for (int i = 0; i < pbb->size; i++)
-        perm[i] = bestpermut[i];
+        _perm[i] = perm[i];
     pthread_mutex_unlock(&mutex_sol);
 }
 
@@ -73,19 +69,19 @@ solution::getBest()
 {
     int ret;
     pthread_mutex_lock_check(&mutex_sol);
-    ret=bestcost;
+    ret=cost;
     pthread_mutex_unlock(&mutex_sol);
     return ret;
 }
 
+//no lock...
 void
-solution::getBest(int& cost)
+solution::getBest(int& _cost)
 {
-    // printf("bestcost: %d\n",bestcost);
-    if (bestcost == cost) return;
+    if (cost == _cost) return;
 
-    if (bestcost < cost) {
-        cost = bestcost;
+    if (cost < _cost) {
+        _cost = cost;
         return;
     }
 }
@@ -94,9 +90,9 @@ void
 solution::print()
 {
     pthread_mutex_lock_check(&mutex_sol);
-    printf("Cost: %d\t\t", bestcost);
+    printf("Cost: %d\t\t", cost);
     for (int i = 0; i < pbb->size; i++) {
-        printf("%3d\t", bestpermut[i]);
+        printf("%3d\t", perm[i]);
     }
     printf("\n");
     fflush(stdout);
@@ -106,14 +102,10 @@ solution::print()
 void
 solution::save()
 {
-    FILE_LOG(logINFO) << "SAVE SOLUTION " << this->bestcost;
+    FILE_LOG(logINFO) << "SAVE SOLUTION " << this->cost;
+
     std::ofstream stream(("./bbworks/sol" + std::string(arguments::inst_name) + ".save").c_str());
-
     stream << *this <<std::endl;
-
-    // stream << *(pbb->sltn);
-    // stream << *this;
-    // std::cout<<"SAVE "<<totalNodes<<std::endl;
     stream.close();
 }
 
@@ -123,12 +115,12 @@ solution::operator=(solution& s)
     pbb  = s.pbb;
     size = s.size;
 
-    bestcost   = s.bestcost;
+    cost   = s.cost;
     newBest    = s.newBest;
 
     for(int i=0;i<size;i++)
     {
-        bestpermut[i]=s.bestpermut[i];
+        perm[i]=s.perm[i];
     }
     return *this;
 }
@@ -140,9 +132,9 @@ std::ostream&
 operator << (std::ostream& stream, const solution& s)
 {
     stream << s.size << std::endl;
-    stream << s.bestcost << std::endl;
+    stream << s.cost << std::endl;
     for (int i = 0; i < s.size; i++) {
-        stream << s.bestpermut[i] << " ";
+        stream << s.perm[i] << " ";
     }
     stream << std::endl;
 
@@ -154,9 +146,9 @@ std::istream&
 operator >> (std::istream& stream, solution& s)
 {
     stream >> s.size;
-    stream >> s.bestcost;
+    stream >> s.cost;
     for (int i = 0; i < s.size; i++) {
-        stream >> s.bestpermut[i];
+        stream >> s.perm[i];
     }
     return stream;
 }

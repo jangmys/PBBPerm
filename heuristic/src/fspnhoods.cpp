@@ -1,5 +1,5 @@
-#include "../../common/headers/misc.h"
-#include "../headers/fspnhoods.h"
+#include "../../common/include/misc.h"
+#include "../include/fspnhoods.h"
 
 fspnhood::fspnhood(instance_abstract* inst){
     m=new fastInsertRemove(inst);

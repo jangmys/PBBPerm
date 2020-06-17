@@ -7,7 +7,6 @@
 #include "../../bounds/include/libbounds.h"
 #include "../../heuristic/include/IG.h"
 
-
 #ifndef PBAB_H
 #define PBAB_H
 
@@ -24,23 +23,19 @@ public:
     int size;
 
     instance_abstract * instance;
+
     solution* sltn;
     solution* root_sltn;
-
-    // weights* wghts;//only for interval?
-    ttime* ttm;
-
-    IG* ils;
-
     bool foundSolution;
+
+    ttime* ttm;
 
     statistics stats;
     void printStats();
 
     void set_instance(char problem[],char inst_name[]);
-    void set_heuristic();
+    // void set_heuristic();
 
-    // pbab(instance_abstract * _instance);
     pbab();
     ~pbab();
 
@@ -50,13 +45,8 @@ public:
 
     void buildPriorityTables();
     void buildInitialUB();
-    // int *posFreq;
-    // int *fwdFreq;
-    // int *bwdFreq;
 
     std::vector<std::tuple< std::vector<int>,std::vector<int> >> remain;
-    std::vector<std::vector<int>> begins;
-    std::vector<std::vector<int>> ends;
 };
 
 #endif // ifndef PBAB_H

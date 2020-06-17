@@ -7,7 +7,7 @@
 #include <limits.h>
 #include <random>
 
-#include "../headers/fastinsertremove.h"
+#include "../include/fastinsertremove.h"
 
 fastInsertRemove::fastInsertRemove(instance_abstract * _instance)
 {

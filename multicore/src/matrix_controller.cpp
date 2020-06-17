@@ -84,7 +84,7 @@ matrix_controller::initFullInterval()
         endFact[i]  = size - i - 1;
     }
 
-    sbb[0]->setRoot(pbb->root_sltn->bestpermut);
+    sbb[0]->setRoot(pbb->root_sltn->perm);
     sbb[0]->initAtInterval(zeroFact, endFact);
     sbb[0]->set_workState(true);
 
@@ -137,7 +137,7 @@ matrix_controller::initFromFac(const int nbint, const int * ids, int * pos, int 
         victim_list.push_front(id);// put in front
 
         // initialize at interval [begin,end]
-        sbb[id]->setRoot(pbb->root_sltn->bestpermut);
+        sbb[id]->setRoot(pbb->root_sltn->perm);
         sbb[id]->initAtInterval(pos + k * size, end + k * size);
         pthread_mutex_unlock(&sbb[k]->mutex_ivm);
     }

@@ -1,12 +1,13 @@
+#ifndef SOLUTION_H
+#define SOLUTION_H
+
 #include <iostream>
 #include <climits>
 #include <pthread.h>
 
-
-
-
-#ifndef SOLUTION_H
-#define SOLUTION_H
+/*
+this class and subproblem are somewhat redundant....
+*/
 
 class pbab;
 
@@ -18,14 +19,14 @@ public:
 
     int size;
 
-    int bestcost;
-    int* bestpermut;
+    int cost;
+    int* perm;
 
     pthread_mutex_t mutex_sol;
     bool newBest;
 
-    int update(int* candidate, int cost);
-    int updateCost(int cost);
+    int update(const int* candidate, const int cost);
+    int updateCost(const int cost);
 
     void getBestSolution(int* permut, int &cost);
 

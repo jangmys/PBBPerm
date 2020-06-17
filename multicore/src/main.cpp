@@ -19,7 +19,6 @@ main(int argc, char ** argv)
     arguments::parse_arguments(argc, argv); //overrides arguments from IniFile
     arguments::initialize();
 
-    pbab * pbb = new pbab();
 
 	//multicoreBB as a worker in distributed execution behaves differently...
 	if(!arguments::singleNode){
@@ -33,20 +32,13 @@ main(int argc, char ** argv)
     FILE* log_fd = fopen( "./mc.log", "w" );
     Output2FILE::Stream() = log_fd;
 
-    struct timespec tstart, tend;
+	pbab * pbb = new pbab();
 
     //set initial solution
     pbb->buildInitialUB();
 
-    if(arguments::init_mode==0){
-        FILE_LOG(logINFO) << "Initializing at optimum " << arguments::initial_ub;
-        FILE_LOG(logINFO) << "Guiding solution " << *(pbb->sltn);
-        pbb->sltn->bestcost = arguments::initial_ub;
-    }else{
-        FILE_LOG(logINFO) << "Start search with heuristic solution\n" << *(pbb->sltn);
-    }
-    *pbb->root_sltn = *pbb->sltn;
 
+	struct timespec tstart, tend;
     // if(arguments::init_mode==-2){
 	// 	pbb->buildInitialUB();
     //     printf("Initial Solution:\n");
@@ -57,7 +49,7 @@ main(int argc, char ** argv)
     // }
     // pbb->root_sltn = pbb->sltn;
 
-	std::cout<<*(pbb->sltn)<<"\n";
+	std::cout<<"Initial solution:\n"<<*(pbb->sltn)<<"\n";
 
 	// int bbmode=0;
 	// bool sequential=true;
@@ -75,15 +67,12 @@ main(int argc, char ** argv)
 
             sequentialbb *sbb=new sequentialbb(pbb);
 
-            sbb->setRoot(pbb->root_sltn->bestpermut);
+            sbb->setRoot(pbb->root_sltn->perm);
 
             sbb->initFullInterval();
             clock_gettime(CLOCK_MONOTONIC, &tstart);
             while(sbb->next());
             clock_gettime(CLOCK_MONOTONIC, &tend);
-
-            if(arguments::truncateSearch)
-                std::cout<<"remaining: "<<pbb->remain.size()<<std::endl;
 
             delete sbb;
             break;
@@ -100,7 +89,7 @@ main(int argc, char ** argv)
 
                 std::cout<<"RESTART "<<*(pbb->sltn)<<"\n";
 
-                sbb->setRoot(pbb->sltn->bestpermut);
+                sbb->setRoot(pbb->sltn->perm);
                 sbb->initFullInterval();
                 // while(!pbb->foundSolution)
                     // sbb->next();
@@ -109,10 +98,7 @@ main(int argc, char ** argv)
                 // pbb->ils->localSearchKI(pbb->sltn->bestpermut,sqrt(pbb->size));
 
             }
-
-
             clock_gettime(CLOCK_MONOTONIC, &tend);
-
 
             delete sbb;
             break;
@@ -120,22 +106,26 @@ main(int argc, char ** argv)
         case multicore:
         {
             std::cout<<"=== Multi-core exploration...\n";
-
+            clock_gettime(CLOCK_MONOTONIC, &tstart);
+			//
             matrix_controller *mc = new matrix_controller(pbb);
             mc->initFullInterval();
             mc->next();
             delete mc;
+            clock_gettime(CLOCK_MONOTONIC, &tend);
+
             break;
         }
         case increaseLB:
         {
+            clock_gettime(CLOCK_MONOTONIC, &tstart);
             matrix_controller *mc = new matrix_controller(pbb);
 
             int c=arguments::initial_ub;
             while(!pbb->foundSolution)
             {
                 pbb->reset();
-                pbb->sltn->bestcost=c++;
+                pbb->sltn->cost=c++;
 
                 mc->initFullInterval();
                 if(!mc->solvedAtRoot())
@@ -147,11 +137,13 @@ main(int argc, char ** argv)
 
                 pbb->printStats();
             }
+            clock_gettime(CLOCK_MONOTONIC, &tend);
         }
     }
+
 	pbb->printStats();
 
-    clock_gettime(CLOCK_MONOTONIC, &tend);
+    // clock_gettime(CLOCK_MONOTONIC, &tend);
     printf("\nWalltime :\t %2.8f\n", (tend.tv_sec - tstart.tv_sec) + (tend.tv_nsec - tstart.tv_nsec) / 1e9f);
 
     return EXIT_SUCCESS;

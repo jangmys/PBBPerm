@@ -3,7 +3,6 @@
 
 #include "../../common/include/misc.h"
 #include "../../common/include/subproblem.h"
-#include "../../common/include/permutation.h"
 
 #include "fspnhoods.h"
 #include "fastNEH.h"
@@ -33,7 +32,7 @@ public:
     int makespan(subproblem* s);
 
     void runIG();
-    void runIG(permutation* current, int l1, int l2);
+    // void runIG(permutation* current, int l1, int l2);
 
     int runIG(subproblem* s);
     int runIG(subproblem* current,subproblem* guide);
