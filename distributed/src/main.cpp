@@ -70,18 +70,6 @@ main(int argc, char ** argv)
 
                 pbb->buildInitialUB();
 
-                // if(arguments::init_mode==0){
-                //     FILE_LOG(logINFO) << "Initializing at optimum " << arguments::initial_ub;
-                //     FILE_LOG(logINFO) << "Guiding solution " << *(pbb->sltn);
-                //     pbb->sltn->cost = arguments::initial_ub;
-                // }else{
-                //     FILE_LOG(logINFO) << "Start search with heuristic solution\n" << *(pbb->sltn);
-                // }
-                // *pbb->root_sltn = *pbb->sltn;
-
-                // printf("Initial Solution:\n");
-                // pbb->sltn->print();
-
                 struct timespec tstart, tend;
                 clock_gettime(CLOCK_MONOTONIC, &tstart);
 
@@ -92,7 +80,6 @@ main(int argc, char ** argv)
 
                 MPI_Bcast(pbb->sltn->perm, pbb->size, MPI_INT, 0, MPI_COMM_WORLD);
                 MPI_Bcast(&pbb->sltn->cost, 1, MPI_INT, 0, MPI_COMM_WORLD);
-                // MPI_Reduce()
 
                 mstr->run();
 
