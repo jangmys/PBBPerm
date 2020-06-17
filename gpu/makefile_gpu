@@ -1,0 +1,50 @@
+BUILD=./build/
+BINDIR=./bin/
+SRCDIR=../common/src/
+HDRS=../common/headers/
+
+CUDA_PATH = /usr/local/cuda/
+CULIB = $(CUDA_PATH)lib64/
+
+INCLUDE_DIR += $(CUDA_PATH)include
+LIBRARY_DIR +=
+LDFLAGS += $(addprefix -L,$(LIBRARY_DIR)) -L$(CULIB)
+
+LIB=-ldl -lpthread -lm -lcuda -lcudart -L../bounds -lbounds -L../heuristic -lig
+OPT = -Wall -pedantic -Wno-unused-result -O3
+
+PROBLEM ?= FSP
+DEF=-D$(PROBLEM)
+
+NVOPT = --ptxas-options=-v
+
+NVCC = $(CUDA_PATH)bin/nvcc $(NVOPT) -std=c++11 $(DEF)
+CXX=g++
+CXX += -DUSE_GPU $(DEF)
+
+CPPFLAGS = -std=c++11
+CPPFLAGS += $(addprefix -I,$(INCLUDE_DIR))
+
+OPT += $(LDFLAGS) $(LIB) $(CPPFLAGS)
+
+FFILES=main arguments pbab solution subproblem ttime gpubb
+OOBJS=$(addprefix $(BUILD), $(addsuffix .o, $(FFILES)))
+
+bb_gpu: $(OOBJS)
+	$(CXX) $(OOBJS) -o $@ $(OPT)
+
+$(BUILD)main.o: src/main.cpp
+	@mkdir -p $(BUILD)
+	$(CXX) -o $@ -c $< $(OPT)
+
+$(BUILD)%.o: $(SRCDIR)%.cpp $(HDRS)%.h
+	@mkdir -p $(BUILD)
+	$(CXX) $(CFLAGS) -c $< -o $@ $(OPT)
+
+$(BUILD)gpubb.o : src/gpubb.cu src/bb_kernels.cu headers/gpubb.h
+	@mkdir -p $(BUILD)
+	$(NVCC) -o $@ -c $<
+
+
+clean:
+	rm $(OOBJS) $(EXEC) *.o $(BINDIR)gpubb.o
