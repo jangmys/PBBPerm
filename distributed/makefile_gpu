@@ -1,0 +1,45 @@
+###############################################################################
+INCLUDE_DIR +=
+LIBRARY_DIR +=
+LDFLAGS += $(addprefix -L,$(LIBRARY_DIR))
+
+BUILD=./build/
+BINDIR=./bin/
+SRCDIR=./src/
+SRCDIR2=../common/src/
+HDRS=./headers/
+
+LIB=-ldl -lpthread -lm -lgmp -lgmpxx -lstdc++ -L../bounds -lbounds -L/usr/local/cuda/lib64 -lcuda -lcudart -I/usr/local/cuda/include -L../heuristic -lig
+
+OPT = -Wall -pedantic -Wno-unused-result -O3 -DUSE_GPU
+
+CXX=mpicxx
+
+CPPFLAGS = -std=c++11
+CPPFLAGS += $(addprefix -I,$(INCLUDE_DIR))
+
+OPT += $(LDFLAGS) $(LIB) $(CPPFLAGS)
+
+FILES=main master worker worker_gpu communicator works work interval fact_work weights
+FFILES=arguments pbab solution subproblem ttime
+
+OOBJS=$(addprefix $(BUILD), $(addsuffix .o, $(FFILES))) $(addprefix $(BUILD), $(addsuffix .o, $(FILES))) ../sequential/build/matrix_controller.o ../sequential/build/sequentialbb.o ../sequential/build/bbthread.o ../sequential/build/ivm.o ../sequential/build/ivm_bound.o ../gpu/build/gpubb.o
+
+bb: $(OOBJS)
+	$(CXX) $(OOBJS) -o $@ $(OPT)
+
+$(BUILD)main.o:	$(SRCDIR)main.cpp
+	@mkdir -p $(BUILD)
+	$(CXX) -o $@ -c $< $(OPT)
+
+$(BUILD)%.o: $(SRCDIR)%.cpp $(HDRS)%.h
+	@mkdir -p $(BUILD)
+	$(CXX) $(CFLAGS) -c $< -o $@ $(OPT)
+
+$(BUILD)%.o: $(SRCDIR2)%.cpp
+	@mkdir -p $(BUILD)
+	$(CXX) $(CFLAGS) -c $< -o $@ $(OPT)
+
+clean:
+	rm -r $(BUILD)
+	rm *.o bb
