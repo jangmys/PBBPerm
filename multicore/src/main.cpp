@@ -1,6 +1,5 @@
 #include "../../common/include/arguments.h"
 #include "../../common/include/pbab.h"
-#include "../../common/include/ttime.h"
 #include "../../common/include/solution.h"
 #include "../../common/include/log.h"
 
@@ -38,28 +37,20 @@ main(int argc, char ** argv)
     pbb->buildInitialUB();
 
 
-	struct timespec tstart, tend;
-    // if(arguments::init_mode==-2){
-	// 	pbb->buildInitialUB();
-    //     printf("Initial Solution:\n");
-    //     pbb->sltn->print();
-    // }
-    // if(arguments::init_mode==0){
-    //     pbb->sltn->bestcost=arguments::initial_ub;
-    // }
-    // pbb->root_sltn = pbb->sltn;
-
 	std::cout<<"Initial solution:\n"<<*(pbb->sltn)<<"\n";
 
-	// int bbmode=0;
-	// bool sequential=true;
+    enum algo{seqbb=1,multicore=2,heuristic=3,increaseLB=4};
 
-    enum algo{seqbb=1,heuristic=2,multicore=3,increaseLB=4};
+	int choice=multicore;
+	if(arguments::nbivms_mc==1)
+		choice=seqbb;
 
-    // int choice=seqbb;
-    // int choice=heuristic;
-    int choice=multicore;
+	// experimental....
+	// int choice=heuristic;
+    // int choice=increaseLB;
 
+	struct timespec tstart, tend;
+	clock_gettime(CLOCK_MONOTONIC, &tstart);
     switch(choice){
         case seqbb:
         {
@@ -68,22 +59,30 @@ main(int argc, char ** argv)
             sequentialbb *sbb=new sequentialbb(pbb);
 
             sbb->setRoot(pbb->root_sltn->perm);
-
             sbb->initFullInterval();
-            clock_gettime(CLOCK_MONOTONIC, &tstart);
+
             while(sbb->next());
-            clock_gettime(CLOCK_MONOTONIC, &tend);
 
             delete sbb;
             break;
         }
+		case multicore:
+		{
+			std::cout<<"=== Multi-core exploration...\n";
+
+			matrix_controller *mc = new matrix_controller(pbb);
+			mc->initFullInterval();
+			mc->next();
+
+			delete mc;
+			break;
+		}
         case heuristic:
         {
             std::cout<<"=== Incomplete Single-threaded search\n";
 
             sequentialbb *sbb=new sequentialbb(pbb);
 
-            clock_gettime(CLOCK_MONOTONIC, &tstart);
             for(int i=0;i<10;i++){
                 pbb->foundSolution=false;
 
@@ -91,34 +90,14 @@ main(int argc, char ** argv)
 
                 sbb->setRoot(pbb->sltn->perm);
                 sbb->initFullInterval();
-                // while(!pbb->foundSolution)
-                    // sbb->next();
                 while(sbb->next());
-
-                // pbb->ils->localSearchKI(pbb->sltn->bestpermut,sqrt(pbb->size));
-
             }
-            clock_gettime(CLOCK_MONOTONIC, &tend);
 
             delete sbb;
             break;
         }
-        case multicore:
-        {
-            std::cout<<"=== Multi-core exploration...\n";
-            clock_gettime(CLOCK_MONOTONIC, &tstart);
-			//
-            matrix_controller *mc = new matrix_controller(pbb);
-            mc->initFullInterval();
-            mc->next();
-            delete mc;
-            clock_gettime(CLOCK_MONOTONIC, &tend);
-
-            break;
-        }
         case increaseLB:
         {
-            clock_gettime(CLOCK_MONOTONIC, &tstart);
             matrix_controller *mc = new matrix_controller(pbb);
 
             int c=arguments::initial_ub;
@@ -137,9 +116,9 @@ main(int argc, char ** argv)
 
                 pbb->printStats();
             }
-            clock_gettime(CLOCK_MONOTONIC, &tend);
         }
     }
+	clock_gettime(CLOCK_MONOTONIC, &tend);
 
 	pbb->printStats();
 

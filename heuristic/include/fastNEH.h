@@ -36,7 +36,6 @@ public:
     void runNEH(int *perm, int &cost);
 
     void insertLS(int *perm);
-
 };
 
 

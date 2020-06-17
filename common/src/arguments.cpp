@@ -17,7 +17,6 @@ int arguments::initial_ub;
 
 int arguments::init_mode = 1;
 
-int nbivm_mc = 4;
 int arguments::nbivms_mc  = -1;
 int arguments::nbivms_gpu = 4096;
 
@@ -95,7 +94,7 @@ arguments::readIniFile()
     init_mode = reader.GetInteger("initial", "ub", -1);
 
     // nb IVMs
-    nbivm_mc   = reader.GetInteger("multicore", "threads", -1);
+    // nbivm_mc   = reader.GetInteger("multicore", "threads", -1);
     nbivms_mc  = reader.GetInteger("multicore", "threads", -1);
     nbivms_gpu = reader.GetInteger("gpu", "nbIVMs", 4096);
 
