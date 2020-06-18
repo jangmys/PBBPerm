@@ -1,13 +1,13 @@
+#ifndef BOUND_FSP_STRONG_H
+#define BOUND_FSP_STRONG_H
+
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
 
-#ifndef BOUND_FSP_STRONG_H
-#define BOUND_FSP_STRONG_H
-
-# include "bound_abstract.h"
+#include "bound_abstract.h"
 
 class pbab;
 
@@ -27,16 +27,12 @@ struct bound_fsp_strong : public bound_abstract {
     static int *  minTempsDep; // [nbMachines]Donne le temps minimale mis pour
     static int *  machine;     // [2];           // [somme]Pour chaque couple nous donne le numero
 
-    static int *  tempsLagRev;
-
     int *         front;
     int *         back;
     int *         remain;
     int *         flag;
 
     int *         rewards;
-    // long long int sumRewards;
-    // long long int avgReward;
 
     int *         countMachinePairs;
     int *         machinePairOrder;
@@ -46,7 +42,6 @@ struct bound_fsp_strong : public bound_abstract {
     init();
     void
     configureBound(const int, const int, const int);
-
 
     void
     initCmax(int * tmp, int * ma, int ind);
@@ -58,24 +53,19 @@ struct bound_fsp_strong : public bound_abstract {
     borneInfMakespan(int * valBorneInf, int minCmax);
 
     int
-    borneInfEpsFirst(int * valBorneInf, int UB, bool earlyExit);
-    int
-    borneInfEpsGreedy(int * valBorneInf, int UB, bool earlyExit);
+    borneInfLearn(int * valBorneInf, int UB, bool earlyExit);
 
     void
     remplirNbJobNbMachines();
     void
     remplirTempsJob();
 
-    // void calculCout(int* ordo, int* res);
     void
     initSomme();
     void
     allouerMemoire();
     void
     remplirLag();
-    void
-    remplirLagRev();
 
     void
     remplirMachine();
@@ -107,7 +97,7 @@ struct bound_fsp_strong : public bound_abstract {
 
     void
     scheduleFront(int permutation[], int limite1, int limite2, int * idle);
-    // void computePartial(subproblem* n);
+
     void
     setFlags(int permutation[], int limite1, int limite2);
     //
@@ -119,16 +109,11 @@ struct bound_fsp_strong : public bound_abstract {
     void
     boundChildren(int permutation[], int limite1, int limite2, int * costsBegin, int * costsEnd, int* prioBegin, int* prioEnd){};
 
-
-
-
     void
     bornes_calculer(int permutation[], int limite1, int limite2, int * couts, int);
     void
     bornes_calculer(int permutation[], int limite1, int limite2);
 
-    // void
-    // set_instance(instance_abstract * _instance);
     int
     evalSolution(int * permut);
 
