@@ -84,28 +84,4 @@ The `./gpu` folder contains the CUDA B&B code, which can be used in:
 As for the multi-core Code, a separate `makefile` and `gpuconfig.ini` are provided. Lauching a single-GPU execution is identical to the multi-core case (only in the `gpu` folder...).
 
 ## Distributed (MPI)
-
-
-
-
-
-;## Other options...
-
-;#### Initial upper bound
-Initialize at
-- 0 : best-known cost (from file) / perm=id
-- 1 : run heuristic (uses all available CPU cores)
-- 2 : infinity / perm=id
-
-This is done in pbab::buildInitialUB.
-
-#### Sorting sibling nodes
-
-
-#### Heuristic
-Currently only for FSP
-
-In addition to initial heuristic, one may run heuristic searches in parallel to the exploration
-1: none
-2: treeSearch
-3: Iterated Local
+The `distributed` folder contains the MPI-based master/worker implementation and depends on the `multi-core` and/or `gpu` B&B code. 
