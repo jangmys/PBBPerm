@@ -21,17 +21,6 @@ PBBPerm solves this problem by using the work stealing paradigm on different lev
 
 ##### Performance
 
-- Provided the overall workload is large enough, PBBPerm achieves very good scalability. Taking for example 50x20 (50 jobs on 20 machines) FSP instances we measured the following processing speed (number of decomposed nodes per second):
-
-
-| | platform | nodes/sec  | approx. rel. speed-up  |
-|---| :------------- |:-------------:| -----:|
-|(A) | single-thread (Intel E5-2630v3 @2.4GHz)  | 0.13 Mn/s |  |
-|(B) | 32 threads on 2x(E5-2630v3 @2.4GHz)  | 2.8 Mn/s | ~20x vs. (A) |
-|(C) | 1 nvidia V100 GPU       | 29 Mn/s      | ~10x vs (B) |
-|(D) | 256 nvidia V100 @ Jean-Zay | 7100 Mn/s      | ~245x vs (C) |
-
-
 
 - [This figure](https://github.com/jangmys/PBBPerm/blob/master/figures/Ta21_timeline.pdf)
 illustrates the evolution of the workload during a short (8 second) run of PBBPerm solving Taillards Flow-Shop instance Ta21 on 4 [Grid'5000](https://www.grid5000.fr) equipped with 2 P100 GPUs each.
@@ -41,6 +30,17 @@ The vertical axis represents the number of active explorers (each GPU-worker use
 - [This figure](https://github.com/jangmys/PBBPerm/blob/master/figures/ScalingOnJeanZay.pdf)
 illustrates the scalability of PBBPerm on the [Jean Zay supercomputer](http://www.idris.fr/jean-zay/) with up to 384 V100 GPUs.
 The resolution time for three 30-job FLow-Shop instances corresponding to different workloads (tree sizes from 122G to 3.7T decomposed nodes). For the larger instance the execution time is reduced from 26 hours on a single GPU to 8 minutes (note the log-scale). (*This work was granted access to the HPC resources of IDRIS under the allocation 2019-A0070611107 made by GENCI*)
+
+- Provided the overall workload is large enough, PBBPerm achieves very good scalability. Taking for example 50x20 FSP instances (50 jobs on 20 machines) we measured the following processing speed (number of decomposed nodes per second):
+
+
+|    | platform | nodes/sec  | approx. rel. speed-up  | cumul. speed-up |
+|----| :------------- |:-------------:| -----:|---:|
+|(A) | single-thread (Intel E5-2630v3 @2.4GHz)  | 0.13 Mn/s |  | 1|
+|(B) | 32 threads on 2x(E5-2630v3 @2.4GHz)  | 2.8 Mn/s | ~20x vs. (A) | 20 |
+|(C) | 1 nvidia V100 GPU       | 29 Mn/s      | ~10x vs (B) | 200 |
+|(D) | 256 nvidia V100 @ Jean-Zay | 7100 Mn/s      | ~245x vs (C) | 49000 |
+
 
 ### Components
 
