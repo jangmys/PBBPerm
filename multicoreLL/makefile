@@ -4,7 +4,6 @@ LIBRARY_DIR +=
 LDFLAGS += $(addprefix -L,$(LIBRARY_DIR))
 
 BUILD=./build/
-BINDIR=./bin/
 SRCDIR=./src/
 SRCDIR2=../common/src/
 HDRS=./include/
