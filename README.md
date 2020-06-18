@@ -84,4 +84,8 @@ The `./gpu` folder contains the CUDA B&B code, which can be used in:
 As for the multi-core Code, a separate `makefile` and `gpuconfig.ini` are provided. Lauching a single-GPU execution is identical to the multi-core case (only in the `gpu` folder...).
 
 ## Distributed (MPI)
-The `distributed` folder contains the MPI-based master/worker implementation and depends on the `multi-core` and/or `gpu` B&B code. 
+The `distributed` folder contains the MPI-based master/worker implementation and depends on the `multi-core` and/or `gpu` B&B code.
+
+To build the distributed PBBPerm code it may be necessary to modify the makefile such that the linker finds the GMP library (not in this repo).
+
+ 
