@@ -8,19 +8,19 @@
 #include <unistd.h>
 #include <mpi.h>
 
-#include "../../common/headers/macros.h"
-#include "../../common/headers/pbab.h"
-#include "../../common/headers/solution.h"
-#include "../../common/headers/ttime.h"
+#include "macros.h"
+#include "pbab.h"
+#include "solution.h"
+#include "ttime.h"
 
-#include "../headers/worker.h"
-#include "../headers/fact_work.h"
-#include "../headers/work.h"
-#include "../headers/communicator.h"
+#include "worker.h"
+#include "fact_work.h"
+#include "work.h"
+#include "communicator.h"
 
 #ifdef USE_GPU
-#include "../headers/worker_gpu.h"
-#include "../../gpu/headers/gpubb.h"
+#include "worker_gpu.h"
+#include "gpubb.h"
 #endif
 
 void
