@@ -23,8 +23,6 @@ ivm_bound::ivm_bound(pbab* _pbb){
     allocate();
 
     initialUB = pbb->sltn->getBest();
-    // pbb->sltn->getBest(initialUB);
-    // printf("=== initial UB: %d \n",initialUB);
 
     if(arguments::problem[0]=='f'){
         bound_fsp_weak *bd=new bound_fsp_weak();
@@ -219,6 +217,7 @@ ivm_bound::computeWeakBounds()
 {
     memset(costsBegin[STRONG], 0, size*sizeof(int));
     memset(costsEnd[STRONG], 0, size*sizeof(int));
+	// std::cout<<*node<<"\n";
 
     bound[WEAK]->boundChildren(node->schedule,node->limit1,node->limit2,costsBegin[WEAK],costsEnd[WEAK],priorityBegin,priorityEnd);
 
@@ -229,14 +228,11 @@ ivm_bound::computeWeakBounds()
         pbb->stats.simpleBounds+=(node->limit2-node->limit1-1);
     }
 
-    // if(arguments::truncateSearch)
-    // {
-    //     if(node->limit2-node->limit1-1 == arguments::truncateDepth){
-    //         printf("cut\n");
-    //         memset(costsBegin[WEAK], INT_MAX, size*sizeof(int));
-    //         memset(costsEnd[WEAK], INT_MAX, size*sizeof(int));
-    //     }
-    // }
+	// for(int i=0;i<size;++i)printf("%d ",costsBegin[WEAK][i]);
+    // printf("\n");
+    // for(int i=0;i<size;++i)printf("%d ",costsEnd[WEAK][i]);
+    // printf("\n");
+    // printf("\n");
 }
 
 void
@@ -297,11 +293,18 @@ ivm_bound::boundRoot(ivm* IVM){
         // if(arguments::problem[0]=='f')
         //     strongBoundPrune(IVM);
         // else
-        weakBoundPrune(IVM);
+            weakBoundPrune(IVM);
+
+        // IVM->displayVector(costsBegin[WEAK]);
+        // IVM->displayVector(costsEnd[WEAK]);
 
         //save first line of matrix (bounded root decomposition)
         rootDir = IVM->dirVect[0];
         memcpy(rootRow, IVM->jobMat, size*sizeof(int));
+
+        // IVM->displayMatrix();
+
+        //std::cout<<"===========\n";
 
         // bool solved=true;
         // for(int i=0;i<size;i++){
@@ -422,11 +425,28 @@ ivm_bound::chooseChildrenSet(const ivm* IVM, const int*cb, const int* ce, const 
             break;
         case 1://MaxSum (requires unscheduled reset to 0)
         {
+            // std::cout<<"sum\n";
             int sum = 0;
+           /* int _line=IVM->line;
+            int * jm = IVM->jobMat + _line * size;
+            for (int i = 0; i < size-IVM->line; i++) {
+                int job = jm[i];
+
+            // for (int i = 0; i < size; ++i) {
+                sum += (cb[job]-ce[job]);
+            }*/
+
             for (int i = 0; i < size; ++i) {
                 sum += (cb[i]-ce[i]);
             }
+
+
             retval = (sum < 0)?BACK:FRONT; //choose larger sum, tiebreak : FRONT
+
+            // std::cout<<sum<<" "<<retval<<"\n";
+
+
+
             break;
         }
         case 2: //MinBranch

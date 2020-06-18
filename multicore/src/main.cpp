@@ -18,14 +18,10 @@ main(int argc, char ** argv)
     arguments::parse_arguments(argc, argv); //overrides arguments from IniFile
     arguments::initialize();
 
+	arguments::singleNode=true;
 
 	//multicoreBB as a worker in distributed execution behaves differently...
-	if(!arguments::singleNode){
-        std::cout<<"Enable single-node mode!\n"<<std::endl;
-        exit(0);
-    }else{
-        printf("=== solving %s / instance %s\n", arguments::problem, arguments::inst_name);
-    }
+    printf("=== solving %s / instance %s\n", arguments::problem, arguments::inst_name);
 
     FILELog::ReportingLevel() = logERROR;//INFO;
     FILE* log_fd = fopen( "./mc.log", "w" );
