@@ -21,16 +21,14 @@ PBBPerm solves this problem by using the work stealing paradigm on different lev
 
 ##### Performance
 
-- **multi-GPU** [This figure]
-(https://github.com/jangmys/PBBPerm/blob/master/figures/Ta21_timeline.pdf)
-illustrates the evolution of the workload during a short (8 second) run of PBBPerm solving Taillards Flow-Shop instance Ta21 on a system with 4 nodes (2 P100 GPUs each). The vertical axis represents the number of active explorers (each GPU-worker uses 16384 IVM-explorers). The small spikes correspond to work stealing operations inside the GPUs and large spikes occur when a worker run out of local work and requests new work from the master process.
-(Experiments were carried out using the [Grid'5000](https://www.grid5000.fr) testbed, supported by a scientific interest group hosted by Inria and including CNRS, RENATER and several Universities as well as other organizations.)
+- [This figure](https://github.com/jangmys/PBBPerm/blob/master/figures/Ta21_timeline.pdf)
+illustrates the evolution of the workload during a short (8 second) run of PBBPerm solving Taillards Flow-Shop instance Ta21 on 4 [Grid'5000](https://www.grid5000.fr) equipped with 2 P100 GPUs each.
+The vertical axis represents the number of active explorers (each GPU-worker uses 16384 IVM-explorers). The small spikes correspond to work stealing operations inside the GPUs and large spikes occur when a worker run out of local work and requests new work from the master process.
+(*Experiments were carried out using the [Grid'5000](https://www.grid5000.fr) testbed, supported by a scientific interest group hosted by Inria and including CNRS, RENATER and several Universities as well as other organizations.*)
 
-- **multi-GPU** [This figure](
-https://github.com/jangmys/PBBPerm/blob/master/figures/ScalingOnJeanZay.pdf)
+- [This figure](https://github.com/jangmys/PBBPerm/blob/master/figures/ScalingOnJeanZay.pdf)
 illustrates the scalability of PBBPerm on the [Jean Zay supercomputer](http://www.idris.fr/jean-zay/) with up to 384 V100 GPUs.
-The resolution time for three 30-job FLow-Shop instances corresponding to different workloads (tree sizes from 122G to 3.7T decomposed nodes). For the larger instance the execution time is reduced from 26 hours on a single GPU to 8 minutes (note the log-scale).
-(This work was granted access to the HPC resources of IDRIS under the allocation 2019-A0070611107 made by GENCI)
+The resolution time for three 30-job FLow-Shop instances corresponding to different workloads (tree sizes from 122G to 3.7T decomposed nodes). For the larger instance the execution time is reduced from 26 hours on a single GPU to 8 minutes (note the log-scale). (*This work was granted access to the HPC resources of IDRIS under the allocation 2019-A0070611107 made by GENCI*)
 
 ### Components
 
