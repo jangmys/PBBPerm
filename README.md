@@ -1,7 +1,7 @@
 # PBBPerm
-Parallel, distributed, GPU-accelerated Branch-and-Bound (B&B) for Permutation Problems
+Parallel, distributed and GPU-accelerated Branch-and-Bound (B&B) for Permutation-based optimization problems
 
-## General description
+### General description
 
 B&B is an exact algorithm which solves combinatorial optimization problems by dynamically constructing and exploring a search tree that implicitly enumerates all possible solutions.
 Due to the combinatorial explosion of the search space, this requires massively parallel processing for all but the smallest problem instances.
@@ -19,12 +19,20 @@ However, as B&B uses pruning to reduce the size of the search space, the size an
 Therefore, naive approaches that statically assign different parts of the tree to workers are inefficient.
 PBBPerm solves this problem by using the work stealing paradigm on different levels (CPU local, GPU local and inter-node). Work units exchanged between workers are integer-intervals instead of sets of nodes, which is particularly useful for efficient intra-GPU load balancing.
 
-[PBBPerm running with 7 P100 worker GPUs](
+##### Performance
+[Figure illustrating a short run with 7 P100 worker GPUs](
 https://github.com/jangmys/PBBPerm/blob/master/figures/Ta21_timeline.pdf)
+
+[Figure scaling on Jean Zay supercomputer with up to 384 V100 GPUs](
+https://github.com/jangmys/PBBPerm/blob/master/figures/ScalingOnJeanZay.pdf)
+
+
 
 The following describes the different components (reflected by the folder structure)
 
-## Bounding functions
+### Components
+
+##### Bounding functions
 The `./bounds` folder contains bounding functions for different problems.
 
 Running `make` in that folder builds a library of lower bounds which can be tested in the `./bounds/test` folder.
