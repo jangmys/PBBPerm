@@ -4,17 +4,17 @@
 #include <iomanip>
 #include <memory>
 
-#include "../../common/headers/pbab.h"
+#include "pbab.h"
 //solution,stats,instance
-#include "../../common/headers/arguments.h"
+#include "arguments.h"
 //nbivms_gpu, problem, boundMode, branchingMode, findAll, printSolutions,ws_strategy
 
-#include "../../common/headers/subproblem.h"
-#include "../../common/headers/solution.h"
-#include "../../common/headers/ttime.h"
-#include "../../common/headers/log.h"
+#include "subproblem.h"
+#include "solution.h"
+#include "ttime.h"
+#include "log.h"
 
-#include "../../bounds/headers/libbounds.h"
+#include "../../bounds/include/libbounds.h"
 
 #include "../headers/gpubb.h"
 
@@ -30,16 +30,20 @@ gpubb::gpubb(pbab * _pbb)
     ringsize = nbIVM;
 
     // CPU-based bound (simple) : needed for solution eval on CPU
-    // as in 'ivm_bound' constructor
+    // as in 'ivm_bound' constructor (should make a function...)
     if (arguments::problem[0] == 'f') {
-        bound = new bound_fsp_weak();
-        bound->set_instance(pbb->instance);
-        bound->init(arguments::branchingMode,0,0);
+        bound_fsp_weak *bd=new bound_fsp_weak();
+        bd->set_instance(pbb->instance);
+        bd->init();
+        bd->branchingMode=arguments::branchingMode;
+        bound=bd;
     }
     if (arguments::problem[0] == 't' || arguments::problem[0] == 'n') {
-        bound = new bound_nqueens();
-        bound->set_instance(pbb->instance);
-        bound->init(arguments::branchingMode,0,0);
+        bound_nqueens *bd=new bound_nqueens();
+        bd->set_instance(pbb->instance);
+        bd->init();
+        bd->branchingMode=arguments::branchingMode;
+        bound=bd;
     }
 
     initialUB = INT_MAX;
@@ -97,7 +101,7 @@ gpubb::initFromFac(const int nbint, const int* ids, int*pos, int* end)
 
 		int *bestsol_d;
 		gpuErrchk( cudaMalloc(&bestsol_d,size*sizeof(int)) );
-		gpuErrchk( cudaMemcpy(bestsol_d,pbb->sltn->bestpermut,size*sizeof(int),cudaMemcpyHostToDevice) );
+		gpuErrchk( cudaMemcpy(bestsol_d,pbb->sltn->perm,size*sizeof(int),cudaMemcpyHostToDevice) );
 
         // bound root node
         #ifdef FSP
@@ -227,7 +231,7 @@ gpubb::initFullInterval()
 
 		int *bestsol_d;
 		gpuErrchk( cudaMalloc(&bestsol_d,size*sizeof(int)) );
-		gpuErrchk( cudaMemcpy(bestsol_d,pbb->sltn->bestpermut,size*sizeof(int),cudaMemcpyHostToDevice) );
+		gpuErrchk( cudaMemcpy(bestsol_d,pbb->sltn->perm,size*sizeof(int),cudaMemcpyHostToDevice) );
 
         // bound root node
         #ifdef FSP

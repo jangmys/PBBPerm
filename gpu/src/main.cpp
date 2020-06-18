@@ -1,13 +1,12 @@
-#include "../../common/headers/arguments.h"
+#include "arguments.h"
+#include "pbab.h"
+#include "solution.h"
+#include "ttime.h"
+#include "log.h"
 
 //INCLUDE INSTANCES
-#include "../../bounds/headers/libbounds.h"
+#include "../../bounds/include/libbounds.h"
 
-// #include "../headers/matrix_controller.h"
-#include "../../common/headers/pbab.h"
-#include "../../common/headers/solution.h"
-#include "../../common/headers/ttime.h"
-#include "../../common/headers/log.h"
 
 // only for GPU version
 #ifdef USE_GPU
@@ -22,6 +21,8 @@ main(int argc, char ** argv)
     arguments::readIniFile();
     arguments::parse_arguments(argc, argv);
     arguments::initialize();
+
+	arguments::singleNode=true;
 
     pbab * pbb = new pbab();//, bound1, bound2);
 
