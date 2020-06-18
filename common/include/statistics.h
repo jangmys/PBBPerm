@@ -4,7 +4,7 @@
 #ifndef STATISTICS_H_
 #define STATISTICS_H_
 
-struct statistics{
+struct statistics {
     std::atomic<uint64_t> johnsonBounds;
     std::atomic<uint64_t> simpleBounds;
     std::atomic<uint64_t> totDecomposed;

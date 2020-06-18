@@ -6,40 +6,51 @@
 #include <pthread.h>
 
 /*
-this class and subproblem are somewhat redundant....
-*/
+ * this class and subproblem are somewhat redundant....
+ */
 
 class pbab;
 
-class solution{
+class solution {
 public:
-    solution(pbab* pbb);
+    solution(pbab * pbb);
 
-    pbab*pbb;
+    pbab * pbb;
 
     int size;
 
     int cost;
-    int* perm;
+    int * perm;
 
     pthread_mutex_t mutex_sol;
     bool newBest;
 
-    int update(const int* candidate, const int cost);
-    int updateCost(const int cost);
+    int
+    update(const int * candidate, const int cost);
+    int
+    updateCost(const int cost);
 
-    void getBestSolution(int* permut, int &cost);
+    void
+    getBestSolution(int * permut, int &cost);
 
-    int getBest();
-    void getBest(int& cost);
-    void print();
+    int
+    getBest();
+    void
+    getBest(int& cost);
+    void
+    print();
 
-    void save();
-    void random();
+    void
+    save();
+    void
+    random();
 
-    solution& operator=(solution& s);
+    solution&
+    operator = (solution& s);
 };
 
-std::ostream&  operator<<(std::ostream& stream,const solution& s);
-std::istream& operator>>(std::istream& stream, solution& s);
-#endif
+std::ostream&
+operator << (std::ostream& stream, const solution& s);
+std::istream&
+operator >> (std::istream& stream, solution& s);
+#endif // ifndef SOLUTION_H

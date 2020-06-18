@@ -16,6 +16,7 @@
 #define _128MB 134217728
 
 #define MAX_MPZLEN 2000
+
 //2*log(2;800!)/64 ~= 2*103 64bit limbs => 2*103*8+4 Bytes
 
 //16384*2*log(2;50!)/8 ~= 1MB

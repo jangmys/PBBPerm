@@ -2,10 +2,10 @@
 
 #include "../include/arguments.h"
 
-int arguments::heuristic_threads = 1;
-int arguments::heuristic_iters   = 1;
+int arguments::heuristic_threads       = 1;
+int arguments::heuristic_iters         = 1;
 int arguments::initial_heuristic_iters = 100;
-char arguments::heuristic_type = 'n';
+char arguments::heuristic_type         = 'n';
 
 int arguments::boundMode     = 2;
 int arguments::branchingMode = 3;
@@ -39,7 +39,7 @@ bool arguments::printSolutions = true;
 
 bool arguments::singleNode = !true;// false;
 
-char arguments::mc_ws_select    = 'o';
+char arguments::mc_ws_select = 'o';
 
 int arguments::truncateDepth   = 0;
 bool arguments::truncateSearch = false;
@@ -127,16 +127,16 @@ arguments::readIniFile()
     heuristic_threads       = reader.GetInteger("heuristic", "heuristic_threads", 1);
     initial_heuristic_iters = reader.GetInteger("heuristic", "initial_heuristic_iters", 1000);
     heuristic_iters         = reader.GetInteger("heuristic", "heuristic_iters", 1000);
-    heuristic_type         = reader.Get("heuristic", "heuristic_type", "n")[0];
+    heuristic_type = reader.Get("heuristic", "heuristic_type", "n")[0];
 
     initial_work = reader.GetInteger("distributed", "initialWork", 3);
-
 } // arguments::readIniFile
 
 inline bool
 fexists(const std::string& name)
 {
     struct stat buffer;
+
     return (stat(name.c_str(), &buffer) == 0);
 }
 
@@ -153,15 +153,15 @@ arguments::initialize()
 
     // flowshop Taillard w/ BKSol initialization
     if (inst_name[0] == 't' && init_mode == 0) {
-        if (fexists("./parameters/instances.data")){
+        if (fexists("./parameters/instances.data")) {
             infile = std::ifstream("./parameters/instances.data");
-        }else if (fexists("../parameters/instances.data")){
+        } else if (fexists("../parameters/instances.data"))  {
             infile = std::ifstream("../parameters/instances.data");
-        }else{
-            std::cout<<"Trying to read best-known solution from ./parameters/instances.data failed\n";
+        } else  {
+            std::cout << "Trying to read best-known solution from ./parameters/instances.data failed\n";
         }
 
-        int id=atoi(&inst_name[2]);
+        int id = atoi(&inst_name[2]);
         rubrique << "instance" << id << "i";
 
         while (!infile.eof()) {
@@ -176,7 +176,7 @@ arguments::initialize()
             }
         }
         infile.close();
-        initial_ub=valeur;
+        initial_ub = valeur;
     }
 
     // flowshop VRF
@@ -268,4 +268,4 @@ arguments::parse_arguments(int argc, char ** argv)
     }
 
     return ok;
-}
+} // arguments::parse_arguments

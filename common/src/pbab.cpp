@@ -8,9 +8,6 @@
 #include "../include/pbab.h"
 #include "../include/log.h"
 
-
-
-
 pbab::pbab()
 {
     stats.totDecomposed = ATOMIC_VAR_INIT(0);

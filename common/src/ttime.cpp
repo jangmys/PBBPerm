@@ -10,7 +10,6 @@
 #include "../include/log.h"
 
 // ___________________________________________
-
 ttime::ttime()
 {
     period_set(CHECKPOINT_TTIME, arguments::checkpointv);

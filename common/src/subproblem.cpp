@@ -56,8 +56,6 @@ subproblem::~subproblem()
     free(schedule);
 }
 
-
-
 int subproblem::locate(const int job)
 {
     for(int i=0;i<size;i++)

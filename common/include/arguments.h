@@ -45,7 +45,6 @@ public:
     //problem
     static char problem[50];
     static char inst_name[50];
-
     static char inifile[50];
 
     //FSP - johnson bound

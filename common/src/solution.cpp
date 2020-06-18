@@ -125,8 +125,6 @@ solution::operator=(solution& s)
     return *this;
 }
 
-
-
 // write solution to stream
 std::ostream&
 operator << (std::ostream& stream, const solution& s)
