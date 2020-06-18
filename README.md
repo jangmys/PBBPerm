@@ -8,7 +8,7 @@ Due to the combinatorial explosion of the search space, this requires massively 
 PBBPerm provides parallel B&B algorithms for solving permutation-based optimization problems on **multi-core** processors, **GPUs** and large-scale **GPU-accelerated HPC systems**.
 
 ##### Data Structure
-All algorithms are based on the **Integer-Vector-Matrix ([IVM](link)) data structure**, dedicated to permutation problems.
+All algorithms are based on the **Integer-Vector-Matrix (IVM) data structure**, dedicated to permutation problems.
 Compared to conventional data structures for B&B (stacks, priority queues, ...) the main advatage of IVM is its constant memory footprint.
 With IVM it is not necessary to maintain pools of dynamically allocated search tree nodes - all memory required is allocated at initialization.
 
@@ -29,7 +29,7 @@ The vertical axis represents the number of active explorers (each GPU-worker use
 
 - [This figure](https://github.com/jangmys/PBBPerm/blob/master/figures/ScalingOnJeanZay.pdf)
 illustrates the scalability of PBBPerm on the [Jean Zay supercomputer](http://www.idris.fr/jean-zay/) with up to 384 V100 GPUs.
-The resolution time for three 30-job FLow-Shop instances corresponding to different workloads (tree sizes from 122G to 3.7T decomposed nodes). For the larger instance the execution time is reduced from 26 hours on a single GPU to 8 minutes (note the log-scale). (*This work was granted access to the HPC resources of IDRIS under the allocation 2019-A0070611107 made by GENCI*)
+The resolution time for three 30-job FLow-Shop instances corresponding to different workloads (tree sizes from 122G to 3.7T decomposed nodes). For the larger instance the execution time is reduced from 26 hours on a single GPU to 8 minutes (note the log-scale). (*This work was granted access to the HPC resources of [IDRIS](http://www.idris.fr/) under the allocation 2019-A0070611107 made by GENCI*)
 
 - Provided the overall workload is large enough, PBBPerm achieves very good scalability. Taking for example 50x20 FSP instances (50 jobs on 20 machines) we measured the following processing speed (number of decomposed nodes per second):
 
