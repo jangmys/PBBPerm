@@ -3,10 +3,9 @@
 
 #include <sstream>
 
-struct instance_abstract
-{
-    int size;
-    std::stringstream *data;
+struct instance_abstract {
+    int                 size;
+    std::stringstream * data;
 };
 
 #endif

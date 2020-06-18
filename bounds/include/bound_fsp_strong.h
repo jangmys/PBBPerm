@@ -12,31 +12,31 @@
 class pbab;
 
 struct bound_fsp_strong : public bound_abstract {
-    int branchingMode;
-    int earlyExit;
-    int machinePairs;
+    int          branchingMode;
+    int          earlyExit;
+    int          machinePairs;
 
-    int           nbJob;      // Nombre de jobs
-    int           nbMachines; // Nombre de machines
-    int           somme;      // 5:10, 10:45, 20:190.Number of machine pairs
+    int          nbJob;      // Nombre de jobs
+    int          nbMachines; // Nombre de machines
+    int          somme;      // 5:10, 10:45, 20:190.Number of machine pairs
 
-    static int *  tabJohnson;  // [somme][nbJob]Donne l'ordonnancement selon
-    static int *  tempsJob;    // [nbMachines][nbJob]Donne le temps des jobs sur
-    static int *  tempsLag;    // [somme][nbJob]Donne le temps mis par un job
-    static int *  minTempsArr; // [nbMachines]Donne le temps minimale mis pour
-    static int *  minTempsDep; // [nbMachines]Donne le temps minimale mis pour
-    static int *  machine;     // [2];           // [somme]Pour chaque couple nous donne le numero
+    static int * tabJohnson;  // [somme][nbJob]Donne l'ordonnancement selon
+    static int * tempsJob;    // [nbMachines][nbJob]Donne le temps des jobs sur
+    static int * tempsLag;    // [somme][nbJob]Donne le temps mis par un job
+    static int * minTempsArr; // [nbMachines]Donne le temps minimale mis pour
+    static int * minTempsDep; // [nbMachines]Donne le temps minimale mis pour
+    static int * machine;     // [2];           // [somme]Pour chaque couple nous donne le numero
 
-    int *         front;
-    int *         back;
-    int *         remain;
-    int *         flag;
+    int *        front;
+    int *        back;
+    int *        remain;
+    int *        flag;
 
-    int *         rewards;
+    int *        rewards;
 
-    int *         countMachinePairs;
-    int *         machinePairOrder;
-    int *         pluspetit[2];
+    int *        countMachinePairs;
+    int *        machinePairOrder;
+    int *        pluspetit[2];
 
     void
     init();
@@ -107,7 +107,8 @@ struct bound_fsp_strong : public bound_abstract {
     evalMakespan(int permutation[]);
 
     void
-    boundChildren(int permutation[], int limite1, int limite2, int * costsBegin, int * costsEnd, int* prioBegin, int* prioEnd){};
+    boundChildren(int permutation[], int limite1, int limite2, int * costsBegin, int * costsEnd, int * prioBegin,
+      int * prioEnd){ };
 
     void
     bornes_calculer(int permutation[], int limite1, int limite2, int * couts, int);
@@ -127,4 +128,4 @@ struct bound_fsp_strong : public bound_abstract {
     ~bound_fsp_strong(){ };
 };
 
-#endif
+#endif // ifndef BOUND_FSP_STRONG_H

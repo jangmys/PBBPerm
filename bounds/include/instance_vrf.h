@@ -17,4 +17,4 @@ struct instance_vrf : public instance_abstract {
     generate_instance(const char * file, std::ostream& stream);
 };
 
-#endif
+#endif // ifndef INSTANCE_VFR_H

@@ -11,4 +11,4 @@
 #include "bound_nqueens.h"
 #include "bound_null.h"
 
-#endif
+#endif // ifndef LIBBOUNDS_H
