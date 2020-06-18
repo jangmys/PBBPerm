@@ -42,8 +42,12 @@ The resolution time for three 30-job FLow-Shop instances corresponding to differ
 |(D) | 256 nvidia V100 @ Jean-Zay | 7100 Mn/s      | ~245x vs (C) | 49000 |
 
 
-### Components
 
+
+
+
+
+### Components and instrunctions for compilation/execution
 The following describes the most important components and features of PBBPerm.
 
 ##### Bounding functions
@@ -62,24 +66,32 @@ The `./multicore` folder contains the CPU-only IVM-based B&B. It can be run in
 - multi-core worker mode (as part of a distributed execution)
 
 
+In the `./multicore` folder, there is a `makefile` to build to code and a `mcconfig.ini` file that allows to set different execution options (e.g. branching and bounding strategies, number of threads, initial solution, etc). Some explanations are provided in the `.ini` file.
+
+To launch the multicore B&B (from inside the `multicore` folder):
+
+`./bb` //all parameters specified in `mcconfig.ini`
+
+or
+
+`./bb -z p=fsp,i=ta20` // fsp instance ta20 with parameters from .ini file
 
 ## GPU (CUDA)
-recompilation for different problems necessary (constant device memory)
+The `./gpu` folder contains the CUDA B&B code, which can be used in:
+- standalone mode (single-GPU)
+- GPU-worker mode (as part of a distributed execution)
 
+As for the multi-core Code, a separate `makefile` and `gpuconfig.ini` are provided. Lauching a single-GPU execution is identical to the multi-core case (only in the `gpu` folder...).
 
 ## Distributed (MPI)
 
-initmodes
-
-checkpoints
 
 
 
 
+;## Other options...
 
-## Other options...
-
-#### Initial upper bound
+;#### Initial upper bound
 Initialize at
 - 0 : best-known cost (from file) / perm=id
 - 1 : run heuristic (uses all available CPU cores)
