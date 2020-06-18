@@ -22,7 +22,7 @@ public:
     static int branchingMode;
     static int boundMode;
 
-    static char type;       //'g'PU or 'c'PU
+    // static char type;       //'g'PU or 'c'PU
     static bool singleNode; //no MPI = 1 ; distributed = 0
 
     static int instancev;//obsolete : instance as char*
@@ -55,8 +55,6 @@ public:
     static int singleNodeDS;
 
     static bool findAll;
-    static bool localSearchOnLeaves;
-    static bool intermediateLocalSearch;
 
     //verbosity
     static bool printSolutions;
@@ -69,7 +67,6 @@ public:
 
     //work stealing
     static char mc_ws_select;
-    static char gpu_ws_strategy;
 
     static void readIniFile();
     static bool parse_arguments(int argc, char **argv);

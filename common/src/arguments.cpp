@@ -26,7 +26,7 @@ char arguments::inst_name[50];
 char arguments::problem[50];
 char arguments::inifile[50] = "./bbconfig.ini";
 
-char arguments::type = 'c';
+// char arguments::type = 'c';
 
 int arguments::sortNodes         = 1;
 bool arguments::earlyStopJohnson = true;
@@ -37,12 +37,8 @@ int arguments::nodePriority = 1;
 bool arguments::findAll        = false;
 bool arguments::printSolutions = true;
 
-bool arguments::localSearchOnLeaves     = false;
-bool arguments::intermediateLocalSearch = false;
-
 bool arguments::singleNode = !true;// false;
 
-char arguments::gpu_ws_strategy = 'z';
 char arguments::mc_ws_select    = 'o';
 
 int arguments::truncateDepth   = 0;
@@ -83,7 +79,7 @@ arguments::readIniFile()
     // read strings
     strncpy(problem, reader.Get("problem", "problem", "UNKNOWN").c_str(), 50);
     strncpy(inst_name, reader.Get("problem", "instance", "UNKNOWN").c_str(), 50);
-    printf("%s / %s\n", problem, inst_name);
+    // printf("%s / %s\n", problem, inst_name);
 
     // read integers
     checkpointv = reader.GetInteger("time", "checkpoint", 1);// default values;
@@ -121,7 +117,7 @@ arguments::readIniFile()
     //     std::cout<<"Printing Solutions..."<<std::endl;
 
     mc_ws_select = *(reader.Get("multicore", "worksteal", "r").c_str());
-    type         = reader.Get("bb", "type", "c")[0];
+    // type         = reader.Get("bb", "type", "c")[0];
 
     truncateDepth  = reader.GetInteger("truncate", "truncDepth", 0);
     truncateSearch = reader.GetBoolean("truncate", "truncSearch", false);
@@ -258,11 +254,11 @@ arguments::parse_arguments(int argc, char ** argv)
                 // std::cout<<"inifile:\t"<<inifile<<std::endl;
                 break;
             }
-            case 't': {
-                type = argv[optind][0];
-                // printf("Type %c\n",type);
-                break;
-            }
+            // case 't': {
+            //     type = argv[optind][0];
+            //     // printf("Type %c\n",type);
+            //     break;
+            // }
             case 'm': {
                 singleNode = true;
                 break;
