@@ -237,8 +237,8 @@ void bound_fsp_weak::fillMinTimeArrDep()
     int *tmp = new int[nbMachines];
 
     //min run-out times on each machine
+    for (int k = 0; k < nbMachines; k++)minTempsDep[k]=INT_MAX;    
     minTempsDep[nbMachines-1]=0;//always 0 par definition
-    for (int k = 0; k < nbMachines-1; k++)minTempsDep[k]=INT_MAX;
 
     for (int i = 0; i<nbJob; i++){
         for (int k = nbMachines-1; k>=0; k--)tmp[k]=0;
@@ -253,8 +253,8 @@ void bound_fsp_weak::fillMinTimeArrDep()
     }
 
     //min start times on each machine
-    minTempsArr[0]=0;
     for (int k = 0; k < nbMachines; k++)minTempsArr[k]=INT_MAX;
+    minTempsArr[0]=0;
 
     for (int i = 0; i < nbJob; i++) {
         for (int k = 0; k < nbMachines; k++)tmp[k]=0;

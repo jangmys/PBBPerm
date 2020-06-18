@@ -14,13 +14,11 @@ bound_null::set_instance(instance_abstract * _instance)
 }
 
 void
-bound_null::init(const int _branchingMode,const int _earlyExit,const int _machinePairs)
+bound_null::init()
 {
     (instance->data)->clear();
     (instance->data)->seekg(0);
     *(instance->data) >> size;
-
-	branchingMode = _branchingMode;
 
     // instance data... some linearized 2D array
     costMatrix = (int *) malloc(size * size * sizeof(int));
