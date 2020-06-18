@@ -25,9 +25,9 @@ PBBPerm solves this problem by using the work stealing paradigm on different lev
 
 
 | | platform | nodes/sec  | approx. rel. speed-up  |
-|---| ------------- |:-------------:| -----:|
-|(A) | single-thread (Intel E5-2630v3@2.4GHz)  | 0.13 Mn/s |  |
-|(B) | 32 threads on 2xE5-2630v3@2.4GHz (2x8-cores)  | 2.8 Mn/s | ~20x vs. (A) |
+|---| :------------- |:-------------:| -----:|
+|(A) | single-thread (Intel E5-2630v3 @2.4GHz)  | 0.13 Mn/s |  |
+|(B) | 32 threads on 2x(E5-2630v3 @2.4GHz)  | 2.8 Mn/s | ~20x vs. (A) |
 |(C) | 1 nvidia V100 GPU       | 29 Mn/s      | ~10x vs (B) |
 |(D) | 256 nvidia V100 @ Jean-Zay | 7100 Mn/s      | ~245x vs (C) |
 
