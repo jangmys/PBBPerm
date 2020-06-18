@@ -17,6 +17,7 @@ INC := -I include
 all: $(TARGET1) $(TARGET2)
 
 $(TARGET1): $(OBJECTS)
+	@mkdir -p lib
 	$(AR) $@ $^
 
 $(TARGET2): test/testBounds.cpp $(TARGET1)
