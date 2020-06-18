@@ -14,27 +14,22 @@
 #include <cuda_profiler_api.h>
 #include <assert.h>
 
-// don't change order of following includes!
+// don't change order of following includes! (I should set up separate compilation...)
 // GPU:common
-#include "../headers/gpu_helper.cuh"
-#include "../headers/reductions.cuh"
+#include "gpu_helper.cuh"
+#include "reductions.cuh"
+#include "gpu_ivm_navi.cuh"
 
 // GPU:bounds
 #ifdef FSP
-# warning "============Flowshop bound defined ================="
-# include "../headers/gpu_fsp_bound.cuh"
+# include "gpu_fsp_bound.cuh"
 #endif /* ifdef FSP */
 #ifdef TEST
-# warning "=============== TEST defined ============"
-# include "../headers/gpu_test_bound.cuh"
+# include "gpu_test_bound.cuh"
 #endif /* ifdef TEST */
 
-
-#include "../headers/gpu_ivm_navi.cuh"
-#include "../headers/gpu_interval.cuh"
-#include "../headers/loadbalance.cuh"
-
-#include "../headers/ub.cuh"
+#include "gpu_interval.cuh"
+#include "loadbalance.cuh"
 
 /*
  * countNodes_d : count decomposed nodes
@@ -74,7 +69,6 @@ goToNext_dense(int * jobMats_d, int * posVecs_d, int * endVecs_d, int * dirVecs_
     if (state > 0) {
         int l     = 0;          // first split [pos,end]
         while (pv[l] == ev[l] && l < size_d) l++;
-        // l=0;
 
         int * pos = pv + line; // current pos
 
@@ -210,7 +204,7 @@ goToNext2(int * jobMats_d, int * posVecs_d, int * endVecs_d, int * dirVecs_d, in
 
 template<unsigned NN>
 __global__ void
-goToNext2_noshared(int * jobMats_d, int * posVecs_d, int * endVecs_d, int * dirVecs_d, int * line_d, int * state_d, unsigned long long int * count, unsigned int * counter_d, int *schedule_d, int* lim1_d, int*lim2_d, int*costsBE_d, int *flagLeaf, const int best,const int initialUB)
+multistep_triggered(int * jobMats_d, int * posVecs_d, int * endVecs_d, int * dirVecs_d, int * line_d, int * state_d, unsigned long long int * count, unsigned int * counter_d, int *schedule_d, int* lim1_d, int*lim2_d, int*costsBE_d, int *flagLeaf, const int best,const int initialUB)
 {
     thread_block_tile<32> g = tiled_partition<32>(this_thread_block());
 
@@ -253,16 +247,13 @@ goToNext2_noshared(int * jobMats_d, int * posVecs_d, int * endVecs_d, int * dirV
         line[warpID]  = line_d[ivm];
     }
 
-    // pointers to IVM (just to compute less indices)
     g.sync();
     //=====================================
+    // (just to compute less indices)
     int * jm   = jobMats_d + ivm * size_d * size_d; // global mem matrix
 
-    int iter=0;
-
-    // float elapsed=0;
-
-    for(int i=0;i<50;i++){
+    //fixed max number of steps...
+    for(int i=0;i<500;i++){
         // initializing IVM
         if (state[warpID] < 0)
             initStep(g,jm,pv,dirVecs_d + ivm * size_d,line[warpID],state[warpID]);
@@ -350,19 +341,6 @@ goToNext2_noshared(int * jobMats_d, int * posVecs_d, int * endVecs_d, int * dirV
             break;
         }
     }
-    //     if(g.thread_rank()==0)iter++;
-    //     g.sync();
-    //     iter=g.shfl(iter,0);
-    //     g.sync();
-    //
-    //     // elapsed+=(clock64()-clck)/1500000000.0f;
-    //
-    //     if(iter>10000){
-    //     // if(elapsed>4.0){
-    //         if(g.thread_rank()==0)atomicInc(&_trigger,INT_MAX);
-    //         break;
-    //     }
-    // }while(_trigger<2*nbIVM_d/10);// && state!=0);
 
     // increment statistics counters
     if (g.thread_rank() == 0) {
@@ -444,7 +422,6 @@ decodeIVMandFlagLeaf(const T *jobMats_d, const T *dirVecs_d, const T *posVecs_d,
             atomicInc(&targetNode, UINT_MAX);
         }
     }
-
     __threadfence();
 
     limit1s_d[ivm] = l1[warpID];
@@ -493,46 +470,8 @@ decodeIVM(const int *jobMats_d,const int *dirVecs_d,const int *posVecs_d,int *li
     limit2s_d[ivm] = l2[warpID];
 } // prepareSchedules
 
-// template < int N>
-// __global__ void // __launch_bounds__(128, 16)
-// decodeIVM2(const int *jobMats_d,const int *dirVecs_d,const int *posVecs_d,int *limit1s_d,int *limit2s_d,const int *line_d,int *schedules_d, const int *state_d)
-// {
-//     thread_block_tile<16> g = tiled_partition<16>(this_thread_block());
-//
-//     int ivm = (blockIdx.x * blockDim.x + threadIdx.x) / g.size(); // global ivm id
-//     int warpID = threadIdx.x / g.size();
-//     //
-//     // // SHARED MEMORY
-//     extern __shared__ int smemDecode2[];
-//     int *prmu   = smemDecode2;
-//     int *l1      = (int *)&prmu[8 * size_d];
-//     int *l2      = (int *)&l1[8];
-//     //
-//     prmu += warpID * size_d;
-//     //
-//     int line=line_d[ivm];
-//     const int *jm = jobMats_d + ivm * size_d * size_d;
-//     //
-//     // // nothing to do
-//     if (state_d[ivm] == 0) return;
-//     //
-//     tile_decodeIVM(g, jm, &posVecs_d[ivm*size_d],&dirVecs_d[ivm*size_d],line, l1[warpID], l2[warpID], prmu);
-//     g.sync();
-//     //
-//     // //back to main mem
-//     for (int i = g.thread_rank(); i < size_d; i+=g.size()) {
-//         schedules_d[index2D(i,ivm)]=prmu[i];
-//     }
-//     limit1s_d[ivm] = l1[warpID];
-//     limit2s_d[ivm] = l2[warpID];
-// } // prepareSchedules
-
-
-
-
-template < typename T >
-__global__ void // __launch_bounds__(128, 16)
-chooseBranchingSortAndPrune(T *jobMats_d,T *dirVecs_d,const T *posVecs_d,T *limit1s_d,T *limit2s_d, const T *line_d,T *schedules_d,int *costsBE_d,int *prio_d, T *state_d,int *todo_d,const int best,const int initialUB)
+__global__ void
+chooseBranchingSortAndPrune(int *jobMats_d,int *dirVecs_d,const int *posVecs_d,int *limit1s_d,int *limit2s_d, const int *line_d,int *schedules_d,int *costsBE_d,int *prio_d, int *state_d,int *todo_d,const int best,const int initialUB,const int branchStrategy)
 {
     thread_block_tile<32> tile32 = tiled_partition<32>(this_thread_block());
 
@@ -563,9 +502,19 @@ chooseBranchingSortAndPrune(T *jobMats_d,T *dirVecs_d,const T *posVecs_d,T *limi
     // nothing to do
     if (state_d[ivm] == 0) return;
 
-    // int dir=tile_branchMaxSum(tile32, jmrow, &costsBE_d[2 * ivm * size_d], &dirVecs_d[ivm*size_d], line[warpID]);
-    // int dir=tile_branchMinMin(tile32, jmrow, &costsBE_d[2 * ivm * size_d], &dirVecs_d[ivm*size_d], line[warpID]);
-    int dir=tile_MinBranch(tile32, jmrow, &costsBE_d[2 * ivm * size_d], &dirVecs_d[ivm*size_d], line[warpID],initialUB);
+    int dir;
+    switch(branchStrategy){
+    case 1:{
+        dir=tile_branchMaxSum(tile32, jmrow, &costsBE_d[2 * ivm * size_d], &dirVecs_d[ivm*size_d], line[warpID]);
+        break;}
+    case 2:{
+        dir=tile_branchMinMin(tile32, jmrow, &costsBE_d[2 * ivm * size_d], &dirVecs_d[ivm*size_d], line[warpID]);
+        break;}
+    case 3:{
+        dir=tile_MinBranch(tile32, jmrow, &costsBE_d[2 * ivm * size_d], &dirVecs_d[ivm*size_d], line[warpID],initialUB);
+        break;}
+    }
+
     dir=tile32.shfl(dir,0);
     tile32.sync();//!!!! every thread has dir
 
@@ -589,13 +538,6 @@ chooseBranchingSortAndPrune(T *jobMats_d,T *dirVecs_d,const T *posVecs_d,T *limi
                 i1++;
                 i2--;
             }
-            // i1=limit1s_d[ivm]+1;
-            // i2=limit2s_d[ivm]-1;
-            // while(i1<i2)
-            // {
-            //     swap_d(&schedules_d[ivm*size_d+i1],&schedules_d[ivm*size_d+i2]);
-            //     i1++; i2--;
-            // }
         }
         if(prev_dir==1 && dir==0){
             for (int l = 0; l < size_d - line[warpID]; l++){

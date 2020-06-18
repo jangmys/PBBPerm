@@ -7,16 +7,13 @@
 //INCLUDE INSTANCES
 #include "../../bounds/include/libbounds.h"
 
-
-// only for GPU version
-#ifdef USE_GPU
-#include "../headers/gpubb.h"
-#endif
-
+#include "gpubb.h"
 
 int
 main(int argc, char ** argv)
 {
+	strcpy(arguments::inifile,"./gpuconfig.ini");
+
     // initializions...
     arguments::readIniFile();
     arguments::parse_arguments(argc, argv);
@@ -24,7 +21,6 @@ main(int argc, char ** argv)
 
 	arguments::singleNode=true;
 
-    pbab * pbb = new pbab();//, bound1, bound2);
 
     FILELog::ReportingLevel() = logINFO;
     FILE* log_fd = fopen( "./logs/bblog.txt", "w" );
@@ -33,59 +29,46 @@ main(int argc, char ** argv)
     struct timespec tstart, tend;
     clock_gettime(CLOCK_MONOTONIC, &tstart);
 
+	pbab * pbb = new pbab();//, bound1, bound2);
     pbb->buildInitialUB();
-    // if(arguments::init_mode==0){
-    //     FILE_LOG(logINFO) << "Initializing at optimum " << arguments::initial_ub;
-    //     FILE_LOG(logINFO) << "Guiding solution " << *(pbb->sltn);
-    //     pbb->sltn->bestcost = arguments::initial_ub;
-    // }else{
-    //     FILE_LOG(logINFO) << "Start search with heuristic solution\n" << *(pbb->sltn);
-    // }
-
 
     // ###############################
     // ###### SINGLE NODE ######## (no MPI)
     // ###############################
-    if (arguments::singleNode) {
-        printf("=== SINGLE NODE MODE\n");
-        printf("=== solving %s / instance %s\n", arguments::problem, arguments::inst_name);
+    printf("=== solving %s / instance %s\n", arguments::problem, arguments::inst_name);
 
-        #ifdef USE_GPU
-            cudaFree(0);
+    cudaFree(0);
 
-            int device_nb = 0;
-            cudaSetDevice(device_nb);
+    int device_nb = 0;
+    cudaSetDevice(device_nb);
 
-            int device,count;
-            cudaGetDeviceCount(&count);
-            cudaGetDevice(&device);
-            printf("=== Device %d/%d ==\n", device, count-1);
+    int device,count;
+    cudaGetDeviceCount(&count);
+    cudaGetDevice(&device);
+    printf("=== Device %d/%d ==\n", device, count-1);
 
-            cudaDeviceSetCacheConfig(cudaFuncCachePreferShared);
+    cudaDeviceSetCacheConfig(cudaFuncCachePreferShared);
 
-            gpubb* gbb = new gpubb(pbb);//%numDevices);
-            gbb->initialize();// allocate IVM on host/device
+    gpubb* gbb = new gpubb(pbb);//%numDevices);
+    gbb->initialize();// allocate IVM on host/device
 #ifdef FSP
-            printf("=== FSP\n");fflush(stdout);
-            gbb->initializeBoundFSP();
+    printf("=== FSP\n");fflush(stdout);
+    gbb->initializeBoundFSP();
 #endif
 #ifdef TEST
-            printf("\n=== TEST\n");fflush(stdout);
-            gbb->initializeBoundTEST();
+    printf("\n=== TEST\n");fflush(stdout);
+    gbb->initializeBoundTEST();
 #endif
-            gbb->copyH2D();
-            gbb->initFullInterval();
+    gbb->copyH2D();
+    gbb->initFullInterval();
 
-            gbb->next();
+    gbb->next();
 
-            gbb->printStats();
-            delete gbb;
-#else
-            printf("GPU mode : compile with -DUSE_GPU! Aborting...\n");
-#endif
-    }else{
-        printf("=== ENABLE SINGLE NODE MODE!\n");
-    }
+    gbb->getStats();
+
+	pbb->printStats();
+
+    delete gbb;
 
     clock_gettime(CLOCK_MONOTONIC, &tend);
     printf("\nWalltime :\t %2.8f\n", (tend.tv_sec - tstart.tv_sec) + (tend.tv_nsec - tstart.tv_nsec) / 1e9f);
