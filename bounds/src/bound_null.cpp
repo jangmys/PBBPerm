@@ -26,7 +26,7 @@ bound_null::init()
     // some cost matrix...
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++) {
-            costMatrix[i * size + j] = (i+j==size)?0:1; //rand() % 100;
+            costMatrix[i * size + j] = (i + j == size) ? 0 : 1; // rand() % 100;
         }
     }
 }
@@ -57,9 +57,9 @@ bound_null::bornes_calculer(int permutation[], int limit1, int limit2, int * cou
     // partial cost
     for (int i = 0; i < limit1; i++) {
         int from = permutation[i];
-        int to = permutation[i+1];
+        int to   = permutation[i + 1];
 
-        lb += costMatrix[from*size + to];
+        lb += costMatrix[from * size + to];
     }
     // ...lb is a naive lb for TSP
 
@@ -68,57 +68,59 @@ bound_null::bornes_calculer(int permutation[], int limit1, int limit2, int * cou
 }
 
 void
-bound_null::boundChildren(int *schedule, int limit1, int limit2, int * costsBegin, int * costsEnd, int* prioBegin, int* prioEnd)
+bound_null::boundChildren(int * schedule, int limit1, int limit2, int * costsBegin, int * costsEnd, int * prioBegin,
+  int * prioEnd)
 {
     int _limit1 = limit1 + 1;
     int _limit2 = limit2;
 
-    //needed for "historical" reasons
+    // needed for "historical" reasons
     int costs[2];
 
-    //position to try in permutation
+    // position to try in permutation
     int fillPos = _limit1;
 
     if (branchingMode < 0) {
-        //reset costs... (not sure... better be safe)
-        memset(costsBegin, 0, size*sizeof(int));
+        // reset costs... (not sure... better be safe)
+        memset(costsBegin, 0, size * sizeof(int));
 
-        //LOOP over free elements in permutation
+        // LOOP over free elements in permutation
         for (int i = limit1 + 1; i < limit2; i++) {
-
-            //temporarily generate child subproblem
+            // temporarily generate child subproblem
             std::swap(schedule[fillPos], schedule[i]);
-            //compute bound
+            // compute bound
             bornes_calculer(schedule, _limit1, _limit2, costs, INT_MAX);
-            //store in cost array...
+            // store in cost array...
             costsBegin[ schedule[i] ] = costs[0];
-            //revert previous swap
+            // revert previous swap
             std::swap(schedule[fillPos], schedule[i]);
         }
-    } else  {
-        //if elements fixed at both ends of permutation
+    } else {
+        // if elements fixed at both ends of permutation
         printf("not implemented\n");
         exit(-1);
     }
 }
 
 int
-bound_null::evalSolution(int * permutation){
+bound_null::evalSolution(int * permutation)
+{
     int cost = 0;
 
-    int from,to;
-    // partial cost
-    for (int i = 0; i < size-1; i++) {
-        from = permutation[i];
-        to = permutation[i+1];
+    int from, to;
 
-        cost += costMatrix[from*size + to];
+    // partial cost
+    for (int i = 0; i < size - 1; i++) {
+        from = permutation[i];
+        to   = permutation[i + 1];
+
+        cost += costMatrix[from * size + to];
     }
 
-    from = permutation[size-1];
-    to = permutation[0];
+    from = permutation[size - 1];
+    to   = permutation[0];
 
-    cost += costMatrix[from*size + to];
+    cost += costMatrix[from * size + to];
 
     return cost;
 }

@@ -129,9 +129,9 @@ bound_fsp_strong::borneInfMakespan(int * valBorneInf, int minCmax)
         // add min start times and get ma[0],ma[1] from index i
         initCmax(tmp, ma, i);
 
-        //(1,m),(2,m),...,(m-1,m)
+        // (1,m),(2,m),...,(m-1,m)
         if (machinePairs == 1 && ma[1] < nbMachines - 1) continue;
-        //(1,2),(2,3),...,(m-1,m)
+        // (1,2),(2,3),...,(m-1,m)
         if (machinePairs == 2 && ma[1] != ma[0] + 1) continue;
 
         // compute cost for johnson sequence //O(n)
@@ -141,9 +141,9 @@ bound_fsp_strong::borneInfMakespan(int * valBorneInf, int minCmax)
 
         // take max
         if (tmp[1] > moinsBon) {
-            //best index
-            bestind  = i;
-            //update max
+            // best index
+            bestind = i;
+            // update max
             moinsBon = tmp[1];
         }
 
@@ -154,7 +154,7 @@ bound_fsp_strong::borneInfMakespan(int * valBorneInf, int minCmax)
         }
     }
 
-    //++ successful machine pair
+    // ++ successful machine pair
     countMachinePairs[bestind]++;
 
     valBorneInf[0] = moinsBon;
@@ -164,7 +164,7 @@ bound_fsp_strong::borneInfMakespan(int * valBorneInf, int minCmax)
 int
 bound_fsp_strong::borneInfLearn(int * valBorneInf, int UB, bool earlyExit)
 {
-    //reset periodically...
+    // reset periodically...
     if (nbbounds > 100 * 2 * nbJob) {
         nbbounds = 0;
         for (int k = 0; k < somme; k++) {
@@ -188,9 +188,9 @@ bound_fsp_strong::borneInfLearn(int * valBorneInf, int UB, bool earlyExit)
         i = j++;
     }
 
-    //restrict to best nbMachines
+    // restrict to best nbMachines
     int nbPairs = nbMachines;
-    //learn...
+    // learn...
     if (nbbounds < 2 * nbJob) nbPairs = somme;
     nbbounds++;
 
@@ -445,7 +445,7 @@ bound_fsp_strong::calculBorne(int minCmax)
 
     if (machinePairs == 3) {
         borneInfLearn(valBorneInf, minCmax, true);
-    } else  {
+    } else {
         borneInfMakespan(valBorneInf, minCmax);
     }
 
@@ -530,7 +530,7 @@ bound_fsp_strong::evalMakespan(int permutation[])
         for (int m = 1; m < nbMachines; m++)
             tmp[m] = std::max(tmp[m], tmp[m - 1]) + tempsJob[m * nbJob + job];
     }
-    int ret=tmp[nbMachines - 1];
+    int ret = tmp[nbMachines - 1];
 
     delete[] tmp;
 

@@ -40,10 +40,11 @@ instance_vrf::generate_instance(const char * _file, std::ostream& stream)
         if (!infile.eof()) infile >> size;
         if (!infile.eof()) infile >> nbMachines;
 
-        if (nbMachines){
+        if (nbMachines) {
             stream << size << " " << nbMachines << " ";
         } else {
-            perror("infile read error"); exit(1);
+            perror("infile read error");
+            exit(1);
         }
 
         int tmp[size * nbMachines];
@@ -61,9 +62,8 @@ instance_vrf::generate_instance(const char * _file, std::ostream& stream)
                 stream << tmp[j * nbMachines + i] << " ";
             }
         }
-
-    }else {
-        std::cout << "Error opening file: " << std::string(_file) <<"\n";
+    } else  {
+        std::cout << "Error opening file: " << std::string(_file) << "\n";
         exit(1);
     }
-}
+} // instance_vrf::generate_instance
