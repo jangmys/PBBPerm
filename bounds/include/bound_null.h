@@ -13,7 +13,7 @@ struct bound_null : public bound_abstract
 	int *costMatrix;
 
 	// void init(const int _branchingMode);
-    void init(const int _branchingMode, const int _earlyExit, const int _machinePairs);
+    void init();
 	void set_instance(instance_abstract *_instance);
 	void boundChildren(int *permut, int limit1, int limit2, int* costsBegin, int* costsEnd, int* prioBegin, int* prioEnd);
 
