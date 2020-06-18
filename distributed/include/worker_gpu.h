@@ -4,8 +4,8 @@
 #include <atomic>
 #include <memory>
 
-#include "../../common/headers/log.h"
-#include "../../gpu/headers/gpubb.h"
+#include "log.h"
+#include "gpubb.h"
 
 #include "communicator.h"
 #include "worker.h"
@@ -57,12 +57,8 @@ public:
         work_buf = std::make_shared<fact_work>(pbb, M, size);
         work_buf->max_intervals = M;
         work_buf->id = 0;
-
-        #else // ifdef USE_GPU
-        FILE_LOG(logERROR) <<"arguments::type='g' requires compilation with -DUSE_GPU!";
         #endif // ifdef USE_GPU
     }
-
 
     gpubb * gbb;
 
