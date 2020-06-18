@@ -58,7 +58,6 @@ void communicator::send_work(std::shared_ptr<work> src_wrk, int dest, int tag)
         MPI_Pack(ptr, sz, MPI_BYTE, buffer, MAX_COMM_BUFFER, &pos, MPI_COMM_WORLD);
     }
 
-    // printf("SEND %d %d\n",src_wrk->nb_intervals,pos);
     MPI_Send(buffer, pos, MPI_PACKED, dest, tag, MPI_COMM_WORLD);
 
     fclose(bp);
