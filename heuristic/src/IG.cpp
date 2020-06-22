@@ -98,7 +98,7 @@ void IG::destruction(int *perm, int *permOut, int k)
 
 	//remove jobs from middle with higher probability
     int r=helper::intRand(k, nbJob);
-    int *sel=new int[r];
+    int *sel=new int[nbJob];
     for(int i=0;i<r;i++)sel[i]=visitOrder[i];
     shuffle(sel, r);
 
@@ -107,8 +107,8 @@ void IG::destruction(int *perm, int *permOut, int k)
     // shuffle(sel, nbJob);
 
 
-
     int *flag=(int*)malloc(nbJob*sizeof(int));
+
     for(int i=0;i<nbJob;i++)flag[i]=1;
 
 	//remove k jobs : copy to permOut
@@ -116,6 +116,7 @@ void IG::destruction(int *perm, int *permOut, int k)
         permOut[i]=perm[sel[i]];
         flag[sel[i]]=0;
     }
+    delete[] sel;
 
 	//prefix sum
     int *pref=(int*)calloc(nbJob,sizeof(int));
@@ -134,11 +135,9 @@ void IG::destruction(int *perm, int *permOut, int k)
         perm[i]=tmp[i];
     }
 
+	free(tmp);
+	free(pref);
     free(flag);
-    free(pref);
-    free(tmp);
-    //
-    delete sel;
 }
 
 void IG::destruction(int *perm, int *permOut, int k, int a, int b)
