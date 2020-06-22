@@ -70,6 +70,8 @@ public:
     fastInsertRemove(instance_abstract* inst);
     ~fastInsertRemove();
 
+    // std::vector<std::vector<int>>heads;
+
     int **head;
     int **tail;
     int **inser;
@@ -77,7 +79,7 @@ public:
     tabulist *tabujobs;
     tabulist *tabupos;
 
-    int insertMakespans(int* perm, int len, int job, int* makespans);
+    int insertMakespans(int* perm, int len, int job, std::vector<int>& makespans);
     int removeMakespans(int* perm, int len, int* makespans);
 
     int computeHeads(int* const perm, int len);

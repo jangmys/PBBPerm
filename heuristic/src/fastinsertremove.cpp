@@ -32,9 +32,9 @@ fastInsertRemove::fastInsertRemove(instance_abstract * _instance)
     inser = (int **) malloc(nbMachines * sizeof(int *));
 
     for (int i = 0; i < nbMachines; i++) {
-        head[i]  = (int *) malloc(nbJob * sizeof(int));
-        tail[i]  = (int *) malloc(nbJob * sizeof(int));
-        inser[i] = (int *) malloc(nbJob * sizeof(int));
+        head[i]  = (int *) calloc(nbJob, sizeof(int));
+        tail[i]  = (int *) calloc(nbJob, sizeof(int));
+        inser[i] = (int *) calloc(nbJob, sizeof(int));
     }
 
     sumPT=(int*)malloc(nbJob*sizeof(int));
@@ -187,15 +187,8 @@ void fastInsertRemove::computeInserBlock(int *perm, int len, int * block, int bl
 
 //get len+1 makespans obtained by inserting "job" into positions 0,1,...,len of partial permuation of length len
 //returns cmax before job insertion
-int fastInsertRemove::insertMakespans(int* perm, int len, int job, int* makespans)
+int fastInsertRemove::insertMakespans(int* perm, int len, int job, std::vector<int>& makespans)
 {
-    // printf("Len %d\n",len); fflush(stdout);
-    //
-    // for(int j=0;j<len-1;j++){
-    //     printf("%3d ",perm[j]);
-    // }
-    // printf("\n");
-
     computeHeads(perm, len);
     computeTails(perm, len);
     computeInser(perm, len, job);
@@ -208,13 +201,7 @@ int fastInsertRemove::insertMakespans(int* perm, int len, int job, int* makespan
         }
     }
 
-    // for(int i=0;i<=len;i++){
-    //     printf("%d ",makespans[i]);
-    // }
-    // printf("\n");
-
     return head[nbMachines-1][len-1];
-    // return 0;
 }
 
 
@@ -343,7 +330,8 @@ int fastInsertRemove::remove(int *perm, int &len, const int pos){
 //insert in position which gives best cmax
 int fastInsertRemove::bestInsert(int *perm, int &len, int job, int &cmax)
 {
-    int *makespans=(int*)malloc((len+1)*sizeof(int));
+    std::vector<int>makespans(len+1);
+    // int *makespans=(int*)malloc((len+1)*sizeof(int));
 
     //makespans obtained when inserting job at positions 0,...,len
     insertMakespans(perm, len, job, makespans);
@@ -376,7 +364,7 @@ int fastInsertRemove::bestInsert(int *perm, int &len, int job, int &cmax)
     }
     cmax = mini;
     //
-    free(makespans);
+    // free(makespans);
     //
     return minpos;
 }
@@ -384,7 +372,9 @@ int fastInsertRemove::bestInsert(int *perm, int &len, int job, int &cmax)
 //insert in position which gives best cmax
 int fastInsertRemove::bestInsert2(int *perm, int &len, int job, int &cmax)
 {
-    int *makespans=(int*)malloc((len+1)*sizeof(int));
+    std::vector<int>makespans(len+1);
+
+    // int *makespans=(int*)malloc((len+1)*sizeof(int));
 
     //makespans obtained when inserting job at positions 0,...,len
     int oldcmax=insertMakespans(perm, len, job, makespans);
@@ -405,7 +395,7 @@ int fastInsertRemove::bestInsert2(int *perm, int &len, int job, int &cmax)
 
     cmax = makespans[number];
     //
-    free(makespans);
+    // free(makespans);
     //
     return number;
 }

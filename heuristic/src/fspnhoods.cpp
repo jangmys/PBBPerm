@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "../../common/include/misc.h"
 #include "../include/fspnhoods.h"
 
@@ -52,6 +54,8 @@ int fspnhood::kImove(int* perm,int pos, int kmax)
 
     cmax0=m->computeHeads(perm, len);
 
+    // std::cout<<"... "<<cmax0<<"\n";
+
     m->tabupos->clear();
     m->tabujobs->clear();
     //remove job at position pos (and get removed)
@@ -65,6 +69,7 @@ int fspnhood::kImove(int* perm,int pos, int kmax)
     {
         //find best position to insert removed job (and get resulting makespan)
         m->bestInsert(perm, len, rjob, cmax1);
+        // std::cout<<"... "<<cmax1<<" "<<cmax0<<"\n";
 
         if(cmax1<=cmax0)
         {

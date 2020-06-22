@@ -35,7 +35,7 @@ public:
     // void runIG(permutation* current, int l1, int l2);
 
     int runIG(subproblem* s);
-    int runIG(subproblem* current,subproblem* guide);
+    // int runIG(subproblem* current,subproblem* guide);
 
     void shuffle(int *array, int n);
 
@@ -55,8 +55,8 @@ public:
     int localSearchKI(int *arr,int kmax);
     int localSearchPartial(int *arr,const int len);
 
-    int ris(subproblem* curr,subproblem* guiding);
-    int vbih(subproblem* current, subproblem* guiding);
+    // int ris(subproblem* curr,subproblem* guiding);
+    // int vbih(subproblem* current, subproblem* guiding);
 };
 
 

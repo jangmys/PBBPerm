@@ -11,7 +11,7 @@ TARGET2 := libig.a
 SRCEXT := cpp
 SOURCES := $(wildcard src/*.cpp)
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILD)/%,$(SOURCES:.$(SRCEXT)=.o)) $(BUILD)/subproblem.o
-CFLAGS := -Wall  -Wno-unused-result -Wno-unused-function -std=c++11 -O3
+CFLAGS := -Wall  -Wno-unused-result -Wno-unused-function -std=c++11 -O3 -g 
 LIB := -ldl -lpthread -lm -L../bounds/lib -lbounds
 INC := -I include
 

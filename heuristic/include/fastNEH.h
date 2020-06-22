@@ -1,6 +1,8 @@
 #ifndef FASTNEH_H_
 #define FASTNEH_H_
 
+#include <array>
+
 #include "../../bounds/include/libbounds.h"
 
 
@@ -10,7 +12,7 @@ public:
 
     int nbJob;
     int nbMachines;
-    int **PTM;
+    int *PTM;
 
     int **head;
     int **tail;
@@ -18,7 +20,9 @@ public:
 
     int *sumPT;
 
-    fastNEH();
+    fastNEH(instance_abstract*_inst);
+    ~fastNEH();
+
     void set_instance(instance_abstract*_instance);
     void allocate();
 

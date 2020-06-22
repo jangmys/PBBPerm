@@ -56,15 +56,15 @@ int main(int argc,char **argv)
     s2->limit1=-1;
     s2->limit2=N;
 
-    ils->igiter=1000;
+    ils->igiter=100;
 
-    int c=ils->vbih(s,s2);
-    printf("cost %d\n",c);
+    // int c=ils->vbih(s,s2);
+    // printf("cost %d\n",c);
     // return 0;
 
     // s->shuffle();
 
-    // printf("cost: %d \n",ils->neh->evalMakespan(s->schedule, N));
+    printf("cost: %d \n",ils->neh->evalMakespan(s->schedule, N));
 
     // if(!s->isPermutation())
     // {
@@ -73,7 +73,7 @@ int main(int argc,char **argv)
     // }
 
     //database...
-    int M=10;
+    int M=1;
     // int *solutions=(int*)malloc(M*N*sizeof(int));
     // int *posFreq=(int*)malloc(N*N*sizeof(int));
     // int *fwdFreq=(int*)malloc(N*N*sizeof(int));
@@ -92,74 +92,12 @@ int main(int argc,char **argv)
         printf("cost %d\t",c);
         s->print();
         std::cout<<(endt.tv_sec-startt.tv_sec)+(endt.tv_nsec-startt.tv_nsec)/1e9<<std::endl;
-
-
-        // memcpy(&solutions[l*N],s->schedule,N*sizeof(int));
-
-        // ils->perturbation(s->schedule, 2, s->limit1, s->limit2);
-
-        // s->shuffle();
-
-
-
     }
 
-    // for(int l=0;l<M;l++){
-    //     for(int i=0;i<N;i++){
-    //         int job=solutions[l*N+i];
-    //         posFreq[i*N+job]++;
-    //     }
-    // }
-    //
-    // for(int l=0;l<M;l++){
-    //     for(int i=1;i<N;i++){
-    //         int job=solutions[l*N+i-1];
-    //         int nxt=solutions[l*N+i];
-    //         fwdFreq[job*N+nxt]++;
-    //     }
-    // }
-    //
-    // for(int l=0;l<M;l++){
-    //     for(int i=1;i<N;i++){
-    //         int job=solutions[l*N+i];
-    //         int prv=solutions[l*N+i-1];
-    //         bwdFreq[job*N+prv]++;
-    //     }
-    // }
-
-    // for(int j=0;j<N;j++){
-    //     printf("%3d ",j);
-    // }
-    // printf("\n----------------------------------------------------------------\n");
-    // for(int i=0;i<N;i++){
-    //     for(int j=0;j<N;j++){
-    //         printf("%3d ",posFreq[i][j]);
-    //     }
-    //     printf("\n");
-    // }
-    // printf("\n");
-    // printf("\n");
-    // for(int i=0;i<N;i++){
-    //     for(int j=0;j<N;j++){
-    //         printf("%3d ",fwdFreq[i][j]);
-    //     }
-    //     printf("\n");
-    // }
-    // printf("\n");
-    // printf("\n");
-    // for(int i=0;i<N;i++){
-    //     for(int j=0;j<N;j++){
-    //         printf("%3d ",bwdFreq[i][j]);
-    //     }
-    //     printf("\n");
-    // }
-
-
-    // free(posFreq);
-    // free(fwdFreq);
-    // free(bwdFreq);
-    // free(solutions);
 
     delete ils;
+    delete inst;
+
     delete s;
+    delete s2;
 }
