@@ -25,7 +25,7 @@ FFILES=arguments pbab solution subproblem ttime
 
 OOBJS=$(addprefix $(BUILD), $(addsuffix .o, $(FFILES))) $(addprefix $(BUILD), $(addsuffix .o, $(FILES))) ../multicore/build/matrix_controller.o ../multicore/build/sequentialbb.o ../multicore/build/bbthread.o ../multicore/build/ivm.o ../multicore/build/ivm_bound.o ../gpu/build/gpubb.o ../multicoreLL/build/treeheuristic.o ../multicoreLL/build/tree.o
 
-bb: $(OOBJS)
+bb_gpu: $(OOBJS)
 	$(CXX) $(OOBJS) -o $@ $(OPT)
 
 $(BUILD)main.o:	$(SRCDIR)main.cpp
