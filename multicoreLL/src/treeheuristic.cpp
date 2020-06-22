@@ -66,8 +66,8 @@ treeheuristic::next()
         subproblem* s=new subproblem(*top());
         clearPool();
 
-        std::cout<<"RESTART";
-        std::cout<<"\t"<<*s<<std::endl;
+        // std::cout<<"RESTART";
+        // std::cout<<"\t"<<*s<<std::endl;
 
         setRoot(s->schedule);
         // std::cout<<"\t\t"<<*bestFound<<std::endl;
