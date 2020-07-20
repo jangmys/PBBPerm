@@ -13,9 +13,7 @@ class pbab;
 
 class solution {
 public:
-    solution(pbab * pbb);
-
-    pbab * pbb;
+    solution(int _size);
 
     int size;
 
@@ -23,7 +21,10 @@ public:
     int * perm;
 
     pthread_mutex_t mutex_sol;
-    bool newBest;
+    // volatile bool newBest;
+
+    // bool isImproved();
+
 
     int
     update(const int * candidate, const int cost);

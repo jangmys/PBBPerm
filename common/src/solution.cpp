@@ -4,19 +4,18 @@
 
 #include "../include/log.h"
 
-solution::solution(pbab * _pbb)
+solution::solution(int _size)
 {
-    pbb  = _pbb;
-    size = pbb->size;
+    size = _size;
 
-    perm = (int *)calloc(pbb->size,sizeof(int));
+    perm = (int *)calloc(size,sizeof(int));
     for(int i=0;i<size;i++)
     {
         perm[i]=i;
     }
 
     cost   = INT_MAX;
-    newBest    = false;
+    // newBest    = false;
 
     pthread_mutexattr_t attr;
     pthread_mutexattr_init(&attr);
@@ -31,10 +30,10 @@ solution::update(const int * candidate, const int _cost)
     pthread_mutex_lock_check(&mutex_sol);
     if (_cost < cost) {
         ret = 1;
-        newBest  = true;
+        // newBest  = true;
         cost = _cost;
         if (candidate) {
-            for (int i = 0; i < pbb->size; i++) perm[i] = candidate[i];
+            for (int i = 0; i < size; i++) perm[i] = candidate[i];
         }
     }
     pthread_mutex_unlock(&mutex_sol);
@@ -59,7 +58,7 @@ solution::getBestSolution(int *_perm, int &_cost)
 {
     pthread_mutex_lock_check(&mutex_sol);
     _cost = cost;
-    for (int i = 0; i < pbb->size; i++)
+    for (int i = 0; i < size; i++)
         _perm[i] = perm[i];
     pthread_mutex_unlock(&mutex_sol);
 }
@@ -74,16 +73,18 @@ solution::getBest()
     return ret;
 }
 
-//no lock...
+//no lock?? reading should be ok but better be safe....
 void
 solution::getBest(int& _cost)
 {
-    if (cost == _cost) return;
+    // if (cost == _cost) return;
 
+    pthread_mutex_lock_check(&mutex_sol);
     if (cost < _cost) {
         _cost = cost;
-        return;
     }
+    pthread_mutex_unlock(&mutex_sol);
+    return;
 }
 
 void
@@ -91,7 +92,7 @@ solution::print()
 {
     pthread_mutex_lock_check(&mutex_sol);
     printf("Cost: %d\t\t", cost);
-    for (int i = 0; i < pbb->size; i++) {
+    for (int i = 0; i < size; i++) {
         printf("%3d\t", perm[i]);
     }
     printf("\n");
@@ -102,21 +103,22 @@ solution::print()
 void
 solution::save()
 {
+    pthread_mutex_lock_check(&mutex_sol);
     FILE_LOG(logINFO) << "SAVE SOLUTION " << this->cost;
 
     std::ofstream stream(("./bbworks/sol" + std::string(arguments::inst_name) + ".save").c_str());
     stream << *this <<std::endl;
     stream.close();
+    pthread_mutex_unlock(&mutex_sol);
 }
 
 solution&
 solution::operator=(solution& s)
 {
-    pbb  = s.pbb;
     size = s.size;
 
     cost   = s.cost;
-    newBest    = s.newBest;
+    // newBest    = s.newBest;
 
     for(int i=0;i<size;i++)
     {

@@ -74,6 +74,8 @@ master::initWorks(int initMode)
             break;
     }
 
+    FILE_LOG(logINFO) << "Start with "<< *(pbb->root_sltn);
+
     end = false;
 }
 
@@ -225,7 +227,7 @@ master::run()
     work_in=0; work_out=0;
     // int best_msg=0,remain_msg=0;
 
-	solution* sol_buf=new solution(pbb);
+	solution* sol_buf=new solution(pbb->size);
 
     do{
 		// FILE_LOG(logINFO) << "State\t" << 1;
@@ -284,7 +286,7 @@ master::run()
             case BEST:
             {
                 //receive candidate solution + update Best
-                solution* candidate=new solution(pbb);
+                solution* candidate=new solution(pbb->size);
                 comm->recv_sol(candidate, status.MPI_SOURCE, BEST, &status);
 
                 if(pbb->sltn->update(candidate->perm,candidate->cost))
@@ -325,6 +327,8 @@ master::run()
 
 	FILE_LOG(logINFO) << "master iterations: "<<iter<< " master terminates...";
     FILE_LOG(logINFO) << "processed work in: "<<work_in<<"\t work out:"<<work_out;fflush(stdout);
+
+	delete sol_buf;
 
     shutdown();
 }

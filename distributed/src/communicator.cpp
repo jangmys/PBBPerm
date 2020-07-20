@@ -16,7 +16,7 @@ communicator::communicator(int _M,pbab* _pbb){
     size=pbb->size;//problem size
 
     dwork_buf = std::make_shared<work>(pbb);
-    best_buf = new solution(pbb);
+    best_buf = new solution(pbb->size);
 }
 //===============================================
 communicator::~communicator()
@@ -101,11 +101,9 @@ void communicator::recv_work(std::shared_ptr<work> dst_wrk, int src, int tag, MP
         MPI_Unpack(rbuffer, MAX_COMM_BUFFER, &pos, &sz, 1, MPI_INT, MPI_COMM_WORLD);
         MPI_Unpack(rbuffer, MAX_COMM_BUFFER, &pos, mpz_raw, sz, MPI_BYTE, MPI_COMM_WORLD);
 
-        // pbb->ttm->on(pbb->ttm->processRequest);
         rewind(fd1);
         mpz_inp_raw(src_mpz, fd1);
         tmpb=mpz_class(src_mpz);
-        // pbb->ttm->off(pbb->ttm->processRequest);
 
         //=============
         MPI_Unpack(rbuffer, MAX_COMM_BUFFER, &pos, &sz, 1, MPI_INT, MPI_COMM_WORLD);
@@ -117,6 +115,9 @@ void communicator::recv_work(std::shared_ptr<work> dst_wrk, int src, int tag, MP
 
         (dst_wrk->Uinterval).emplace_back(new interval(tmpb, tmpe, id));
     }
+
+
+    mpz_clear(src_mpz);
 
     fclose(fd1);
     free(rbuffer);

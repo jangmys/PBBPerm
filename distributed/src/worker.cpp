@@ -51,8 +51,8 @@ worker::worker(pbab * _pbb)
     pthread_cond_init(&cond_updateApplied, NULL);
     pthread_cond_init(&cond_trigger, NULL);
 
-    local_sol=new solution(pbb);
-    // for(int i=0;i<size;i++)local_sol->perm[i]=i;
+    local_sol=new solution(pbb->size);
+    for(int i=0;i<size;i++)local_sol->perm[i]=pbb->sltn->perm[i];
 
     reset();
 }
@@ -79,7 +79,6 @@ void
 worker::reset()
 {
     end     = false;
-    newBest = false;
     shareWithMaster = true;
     updateAvailable = false;
 
@@ -87,6 +86,8 @@ worker::reset()
     pbb->stats.johnsonBounds = 0;
     pbb->stats.simpleBounds  = 0;
     pbb->stats.leaves = 0;
+
+    setNewBest(false);
 }
 
 void
@@ -127,14 +128,14 @@ comm_thread(void * arg)
 
     w->sendRequestReady = true;
     w->sendRequest      = false;
-    w->newBest = false;
+    w->setNewBest(false);
 
     pthread_barrier_wait(&w->barrier);
 
     int nbiter = 0;
     int dummy  = 11;
 
-    solution* mastersol=new solution(w->pbb);
+    solution* mastersol=new solution(w->pbb->size);
 
     int masterbest;
 
@@ -166,7 +167,8 @@ comm_thread(void * arg)
             //            printf("send work unit...\n");fflush(stdout);//DEBUG
         } else if (doBest) {
             // printf("=== BEST\n");fflush(stdout);
-            w->newBest = false;
+
+            w->setNewBest(false);
             // get sol
             w->pbb->sltn->getBestSolution(w->comm->best_buf->perm,
                 w->comm->best_buf->cost);// lock on pbb->sltn
@@ -271,7 +273,7 @@ worker::tryLaunchCommBest()
         newBest = true;
         pthread_cond_signal(&cond_trigger);
         pthread_mutex_unlock(&mutex_trigger);
-        pbb->sltn->newBest = false;
+        // pbb->sltn->newBest = false;
     }
 }
 
@@ -315,6 +317,24 @@ worker::checkUpdate()
     return doUpdate;
 }
 
+bool worker::foundNewBest()
+{
+    bool ret;
+    pthread_mutex_lock_check(&mutex_trigger);
+    ret=newBest;
+    pthread_mutex_unlock(&mutex_trigger);
+    return ret;
+}
+
+void worker::setNewBest(bool _v){
+    pthread_mutex_lock_check(&mutex_trigger);
+    newBest=_v;
+    pthread_mutex_unlock(&mutex_trigger);
+};
+
+
+
+
 //performs heuristic in parallel to exploration process
 void *
 heu_thread2(void * arg)
@@ -325,59 +345,82 @@ heu_thread2(void * arg)
 
     pthread_mutex_lock_check(&w->pbb->mutex_instance);
     treeheuristic *th=new treeheuristic(0,w->pbb);
+    // std::cout<<"contructed TH\n";
+
     IG* ils=new IG(w->pbb->instance);
     th->strategy=PRIOQ;
     pthread_mutex_unlock(&w->pbb->mutex_instance);
 
     int N=w->pbb->size;
     subproblem *s=new subproblem(N);
+
+    int gbest;
     int cost;
 
+    bool take=false;
+    // std::cout<<"1 heuristic thread\n";
+
     while(!w->checkEnd()){
-        w->pbb->sltn->getBestSolution(s->schedule,cost);// lock on pbb->sltn
+        w->pbb->sltn->getBestSolution(s->schedule,gbest);// lock on pbb->sltn
+        // cost = gbest;
+
+        int c;
+        // w->local_sol->getBestSolution(s->schedule,c);
+
         int r=helper::intRand(0,100);
 
+        take=false;
         pthread_mutex_lock_check(&w->mutex_solutions);
-        if(w->sol_ind_begin<w->sol_ind_end && r<70){
+        if(w->sol_ind_begin<w->sol_ind_end && r<50){
+            take=true;
+
             if(w->sol_ind_begin >= w->max_sol_ind){
                 FILE_LOG(logERROR) << "Index out of bounds";
                 exit(-1);
             }
-
             for(int i=0;i<N;i++){
                 s->schedule[i]=w->solutions[w->sol_ind_begin*N+i];
             }
+
+            // std::cout<<*s<<std::endl;
+
             w->sol_ind_begin++;
         }
         pthread_mutex_unlock(&w->mutex_solutions);
 
-        int c;
-
-        ils->igiter=arguments::heuristic_iters;
         s->limit1=-1;
-        s->limit2=N;
-
-        c=ils->runIG(s);
-        c=th->run(s,cost);
-
-        pthread_mutex_lock_check(&w->mutex_solutions);
-        FILE_LOG(logINFO)<<"heu "<<*s<<" "<<c<<std::endl;
-        pthread_mutex_unlock(&w->mutex_solutions);
-
-        if (c<cost){
-            w->pbb->sltn->update(s->schedule,c);
-            // printf("hhh %d\t",c);
-            // s->print();
-            FILE_LOG(logINFO)<<"HeuristicBest "<<c<<"\t"<<*(w->pbb->sltn);
-            w->newBest=true;
+        s->limit2=w->pbb->size;
+        if(!take){
+            ils->igiter=20;
+            ils->acceptanceParameter=2.0;
+            cost=ils->runIG(s);
         }
-        if(c<w->local_sol->cost){
-            w->local_sol->update(s->schedule,c);
-            FILE_LOG(logINFO)<<"LocalBest "<<c<<"\t"<<*(w->local_sol);
+
+        // pthread_mutex_lock_check(&w->mutex_solutions);
+        // FILE_LOG(logINFO)<<"START with ["<<cost<<"]\t"<<*s<<"\n";
+        // pthread_mutex_unlock(&w->mutex_solutions);
+
+        cost=th->ITS(s,w->pbb->sltn->getBest());
+
+        // pthread_mutex_lock_check(&w->mutex_solutions);
+        // FILE_LOG(logINFO)<<(take?"FromRunning ":"FromBest ")<<cost<<"\t"<<*s<<std::endl;
+        // pthread_mutex_unlock(&w->mutex_solutions);
+
+        if (cost<w->pbb->sltn->getBest()){
+            // printf("heueuhh %d %d\n",cost,w->pbb->sltn->getBest());
+            w->pbb->sltn->update(s->schedule,cost);
+            // s->print();
+            FILE_LOG(logINFO)<<"HeuristicBest "<<cost<<"\t"<<*(w->pbb->sltn);
+            w->tryLaunchCommBest();
+            // w->setNewBest(true);
+        }
+        if(cost<w->local_sol->cost){
+            w->local_sol->update(s->schedule,cost);
+            FILE_LOG(logINFO)<<"LocalBest "<<cost<<"\t"<<*(w->local_sol);
         }
     }
 
-    // delete ils;
+    delete ils;
     delete th;
 
     pthread_exit(0);
@@ -449,7 +492,8 @@ heu_thread(void * arg)
             // printf("hhh %d\t",c);
             // s->print();
             FILE_LOG(logINFO)<<"HeuristicBest "<<c<<"\t"<<*(w->pbb->sltn);
-            w->newBest=true;
+            // w->tryLaunchCommBest();
+            w->setNewBest(true);
         }
         if(c<w->local_sol->cost){
             w->local_sol->update(s->schedule,c);
@@ -527,7 +571,8 @@ worker::run()
         //        bool isReady=false;
 
         // printf("rrrrrrrr : %d\t",comm->rank);
-        if (pbb->sltn->newBest) {
+        // if (pbb->sltn->newBest) {
+        if(foundNewBest()){
             FILE_LOG(logDEBUG) << "Try launch best-communication";
             tryLaunchCommBest();
         }

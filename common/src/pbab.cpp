@@ -24,10 +24,10 @@ pbab::pbab()
     set_instance(arguments::problem, arguments::inst_name);
     size     = instance->size;
 
-	sltn = new solution(this);
+	sltn = new solution(size);
 	sltn->cost = arguments::initial_ub;
 
-	root_sltn = new solution(this);
+	root_sltn = new solution(size);
 	root_sltn->cost = arguments::initial_ub;
 
 	if (arguments::problem[0] == 'n')
@@ -140,6 +140,7 @@ ig_thread(void * _pbb)
     s->limit2=pbb->size;
 
     ils->igiter=arguments::initial_heuristic_iters;
+
     ils->neh->runNEH(s->schedule, s->cost);
     // std::cout<<"NEH ]]]]]]]]] "<<*s<<std::endl;
 
@@ -158,18 +159,16 @@ void
 pbab::buildInitialUB(){
     sltn->cost=INT_MAX; //temporary...
 
-    switch (arguments::init_mode) {
+	struct timespec startt,endt;
+    clock_gettime(CLOCK_MONOTONIC, &startt);
+
+    switch (arguments::init_solution) {
         case 0: /*iUB=bestKnown*/
         {
-            sltn->cost = arguments::initial_ub; //read from file in arguments.cpp
             for(int i=0; i<size; i++)sltn->perm[i]=i;
-
-            FILE_LOG(logINFO) << "Initializing at bestknown cost: " << arguments::initial_ub;
-            FILE_LOG(logINFO) << "Initial solution: " << *(sltn);
-
             break;
         }
-        case 1: /*iUB=heuristic*/
+        case 1:
         {
             unsigned N=get_nprocs_conf();
             pthread_t *thds=(pthread_t*)malloc(N*sizeof(pthread_t));
@@ -182,18 +181,38 @@ pbab::buildInitialUB(){
             for (unsigned int i = 0; i < N; i++)
                 pthread_join(thds[i], NULL);
 
-            FILE_LOG(logINFO) << "Start search with heuristic solution\n" << *(sltn);
-
+            // FILE_LOG(logINFO) << "Start search with heuristic solution\n" << *(sltn);
             free(thds);
+
+            break;
+        }
+    }
+
+    switch (arguments::init_mode) {
+        case 0: /*iUB=bestKnown*/
+        {
+            sltn->cost = arguments::initial_ub; //read from file in arguments.cpp
+
+            FILE_LOG(logINFO) << "Initializing at bestknown cost: " << arguments::initial_ub;
+            FILE_LOG(logINFO) << "Initial solution: " << *(sltn);
+
+            break;
+        }
+        case 1: /*iUB=heuristic*/
+        {
+            FILE_LOG(logINFO) << "Heuristic solution\n" << *(sltn);
             break;
         }
         case 3: /*iUB=infty*/
         {
-            for(int i=0; i<size; i++)sltn->perm[i]=i;
+            sltn->cost = INT_MAX;
             FILE_LOG(logINFO) << "Initial solution: " << *(sltn);
             break;
         }
     }
+
+    clock_gettime(CLOCK_MONOTONIC, &endt);
+    std::cout<<"T(InitialSolution):\t"<< (endt.tv_sec-startt.tv_sec)+(endt.tv_nsec-startt.tv_nsec)/1e9<<"\t"<<sltn->cost<<std::endl;
 
     //save starting solution
     *root_sltn = *sltn;
