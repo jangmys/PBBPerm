@@ -46,6 +46,7 @@ worker_mc::doWork()
 
     pbb->ttm->off(pbb->ttm->workerExploretime);
 
+    setNewBest(mc->foundNew);
 
     return true; //triggerComm;// comm condition met
 }
@@ -95,32 +96,16 @@ void
 worker_mc::getSolutions()
 {
     // printf("%d %d\n",sol_ind_begin,sol_ind_end);
-
-    if(sol_ind_begin<sol_ind_end)return;
-
-    // int N=100;
-
     pthread_mutex_lock_check(&mutex_solutions);
 
-    // int *sols=(int*)malloc(N*pbb->size*sizeof(int));
+    if(sol_ind_begin >= sol_ind_end){
+        int nb=mc->getSubproblem(solutions,max_sol_ind);
+        if(nb>0){
+            sol_ind_begin=0;
+            sol_ind_end=nb;
+        }
 
-    int nb=mc->getSubproblem(solutions,max_sol_ind);
-
-    // printf("got %d\n",nb);
-    if(nb>0){
-        sol_ind_begin=0;
-        sol_ind_end=nb;
     }
 
-    // for(int i=0;i<nb;i++){
-    //     for(int k=0;k<size;k++){
-    //         printf("%3d ",solutions[i*size+k]);
-    //     }
-    //     printf("\n");
-    // }
-
     pthread_mutex_unlock(&mutex_solutions);
-
-
-    // free(sols);
 }

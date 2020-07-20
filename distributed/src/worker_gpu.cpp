@@ -43,6 +43,8 @@ worker_gpu::doWork()
 
     pbb->ttm->off(pbb->ttm->workerExploretime);
 
+    setNewBest(gbb->localFoundNew);
+
     return allEnd; //triggerComm;// comm condition met
 }
 
@@ -91,15 +93,16 @@ worker_gpu::getIntervals()
 void
 worker_gpu::getSolutions()
 {
-    //still room in buffer
-    if(sol_ind_begin<sol_ind_end)return;
-
     pthread_mutex_lock_check(&mutex_solutions);
-    int nb=gbb->getDeepSubproblem(solutions,max_sol_ind);
 
-    if(nb){
-        sol_ind_begin=0;
-        sol_ind_end=nb;
+    if(sol_ind_begin >= sol_ind_end){
+        int nb=gbb->getDeepSubproblem(solutions,max_sol_ind);
+
+        if(nb){
+            sol_ind_begin=0;
+            sol_ind_end=nb;
+        }
     }
+
     pthread_mutex_unlock(&mutex_solutions);
 }
