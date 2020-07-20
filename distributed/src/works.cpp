@@ -37,7 +37,7 @@ works::init_complete(pbab * _pbb)
 {
     pbb = _pbb;
 
-    std::shared_ptr<work> w(new work(pbb));
+    std::shared_ptr<work> w(new work());
     w->set_id();
 
     mpz_class a("0");
@@ -98,7 +98,7 @@ works::init_complete_split(pbab * _pbb, const int nParts)
 {
     pbb = _pbb;
 
-    std::shared_ptr<work> w(new work(pbb));
+    std::shared_ptr<work> w(new work());
     w->set_id();
 
     mpz_class a("0");
@@ -115,7 +115,7 @@ works::init_complete_split(pbab * _pbb, const int nParts)
     INTERVAL_IT it = (w->Uinterval).begin();
 
     for (it = (w->Uinterval).begin(); it != (w->Uinterval).end(); ++it) {
-        std::shared_ptr<work> tmp(new work(pbb));
+        std::shared_ptr<work> tmp(new work());
         (tmp->Uinterval).push_back(std::move(*it));
 
         unassigned.push_back(tmp);
@@ -132,7 +132,7 @@ works::init_complete_split_lop(pbab * _pbb, const int nParts)
 {
     pbb = _pbb;
 
-    std::shared_ptr<work> w(new work(pbb));
+    std::shared_ptr<work> w(new work());
     w->set_id();
 
     mpz_class a("0");
@@ -150,7 +150,7 @@ works::init_complete_split_lop(pbab * _pbb, const int nParts)
     INTERVAL_IT it = (w->Uinterval).begin();
 
     for (it = (w->Uinterval).begin(); it != (w->Uinterval).end(); ++it) {
-        std::shared_ptr<work> tmp(new work(pbb));
+        std::shared_ptr<work> tmp(new work());
         (tmp->Uinterval).push_back(std::move(*it));
         unassigned.push_back(tmp);
     }
@@ -577,7 +577,7 @@ std::istream& operator>>(std::istream& stream, works& ws)
     // printf("number of 'work' : %d\n",number);
 
     for (int i = 0; i < number; i++) {
-        std::shared_ptr<work> w(new work(ws.pbb, stream));
+        std::shared_ptr<work> w(new work(stream));
         w->set_id();
         w->max_intervals=99999;
         // std::cout<<"work read from stream\n"<<(*w)<<std::endl;

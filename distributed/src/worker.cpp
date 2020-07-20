@@ -27,7 +27,7 @@ worker::worker(pbab * _pbb)
     pbb  = _pbb;
     size = pbb->size;
 
-    dwrk = std::make_shared<work>(pbb);
+    dwrk = std::make_shared<work>();
 
     pthread_barrier_init(&barrier, NULL, 2);// sync worker and helper thread
 
@@ -170,9 +170,11 @@ comm_thread(void * arg)
 
             w->setNewBest(false);
             // get sol
-            w->pbb->sltn->getBestSolution(w->comm->best_buf->perm,
-                w->comm->best_buf->cost);// lock on pbb->sltn
-            w->comm->send_sol(w->comm->best_buf, 0, BEST);
+            solution *tmp=new solution(w->pbb->size);
+            w->pbb->sltn->getBestSolution(tmp->perm,tmp->cost);
+            w->comm->send_sol(tmp, 0, BEST);
+
+            delete tmp;
             // printf("SEND BEST %d ...\n",w->comm->rank   );fflush(stdout);//DEBUG
         }
 
@@ -189,7 +191,7 @@ comm_thread(void * arg)
             case WORK:
             {
                 // receive buffer...
-                std::shared_ptr<work> rwrk(new work(w->pbb));
+                std::shared_ptr<work> rwrk(new work());
 
                 FILE_LOG(logDEBUG4)<<"worker receives";
                 w->comm->recv_work(rwrk, 0, MPI_ANY_TAG, &status);

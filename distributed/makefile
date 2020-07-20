@@ -12,7 +12,7 @@ HDRS=./include/
 
 DEBUG = -g -pg -ftrapv
 LIB=-ldl -lpthread -lm -lgmp -lgmpxx -lstdc++ -L../bounds/lib -lbounds -L../heuristic -lig
-OPT = -Wall -pedantic -Wno-unused-function -Wno-unused-result -O3 #$(DEBUG)
+OPT = -Wall -pedantic -Wno-unused-function -Wno-unused-result -O3 -g #$(DEBUG)
 
 CXX=mpicxx
 

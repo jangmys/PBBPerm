@@ -27,7 +27,7 @@ public:
         M    = mc->getNbIVM();
 
         // TODO make a setter fucntion;;
-        comm = new communicator(M, pbb);
+        comm = new communicator(M, size);
         // printf("construct workermc %d %d\n",M,size);
 
         work_buf = std::make_shared<fact_work>(M, size);

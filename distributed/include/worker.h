@@ -70,11 +70,15 @@ public:
 
     volatile bool shareWithMaster;
     volatile bool end;
-    volatile bool newBest;
     volatile bool trigger;
     volatile bool updateAvailable;
     volatile bool sendRequest;
     volatile bool sendRequestReady;
+
+    volatile bool newBest;
+    bool foundNewBest();
+    void setNewBest(bool _v);
+
 
     void wait_for_trigger(bool& check, bool& best);
     void wait_for_update_complete();

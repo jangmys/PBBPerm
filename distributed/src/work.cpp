@@ -11,7 +11,6 @@
 //===============================================================
 work::work(const work& w) // copie exacte
 {
-    pbb  = w.pbb;// ?
     size = w.size;// ?
 
     id = w.id;
@@ -24,9 +23,8 @@ work::work(const work& w) // copie exacte
     Uinterval = w.Uinterval;
 }
 
-work::work(pbab * pbb) // constructeur d'work le non alloué
+work::work() // constructeur d'work le non alloué
 {
-    this->pbb = pbb;
     if (!isEmpty()) Uinterval.clear();
 
     exploredNodes = 0;
@@ -35,11 +33,9 @@ work::work(pbab * pbb) // constructeur d'work le non alloué
     size = 0;
 }
 
-work::work(pbab*pbb, std::istream& stream)
+work::work(std::istream& stream)
 {
     stream >> *this;
-
-    this->pbb = pbb;
 }
 
 
@@ -214,7 +210,7 @@ work::intersection(const std::shared_ptr<work>& w)
 std::shared_ptr<work>
 work::take(int max){
     // a new work
-    std::shared_ptr<work> tmp(new work(pbb));
+    std::shared_ptr<work> tmp(new work());
 
     if(Uinterval.size()<max){printf("impossible\n");return tmp;}
 
@@ -222,14 +218,11 @@ work::take(int max){
 
     int i=0;
     while(i<max && Uinterval.size()>0){
-        // printf("%d ",(Uinterval.back())->lb);
-        // if((Uinterval.back())->lb<pbb->mstr->master_sol->bestcost){
-            (Uinterval.back())->id=i++;
-            (tmp->Uinterval).push_back(Uinterval.back());
+        (Uinterval.back())->id=i++;
+        (tmp->Uinterval).push_back(Uinterval.back());
         // }
         Uinterval.pop_back();
     }
-    // printf("\t\t%d\n",pbb->mstr->master_sol->bestcost);
 //    insert((tmp->Uinterval).end(),
 //                make_move_iterator(Uinterval.begin()),
 //                make_move_iterator(Uinterval.at(max-1)));
@@ -241,13 +234,13 @@ work::take(int max){
 // divide up to #max intervals (split)
 std::shared_ptr<work> work::divide(int max)
 {
-    std::shared_ptr<work> tmp(new work(pbb));     // a new empty work
+    std::shared_ptr<work> tmp(new work());     // a new empty work
     tmp->set_id(); //with an ID
 
     if (isEmpty()) return tmp; //nothing to get
 
     mpz_class len(0);
-    mpz_class lar(362880);// pbb->wghts->depth[10]);//10!//(40320);
+    mpz_class lar(362880);
     mpz_class coupe;
 
     int nb_stolen = 0;
@@ -477,17 +470,7 @@ work::isEmpty()
 }
 
 /*
- *
- *
- * //checking=======================================================================================
- *
- * bool work::fault()
- * {
- *  return false;//(ttime::time_get()) > (time + 2.0 * pbb->ttm->periods[WORKER_BALANCING]);
- * //	return (ttime::time_get()) > (time + 2.0 * pbb->ttm->periods[WORKER_BALANCING]);
- * }
- * *
- * //=======================================================================================
+  * //=======================================================================================
  * //bool work::intervalSmaller(const interval *A, const interval *B)
  * //{
  * //	return (A->begin < B->begin);
@@ -615,38 +598,6 @@ operator >> (std::istream& stream, work& w)
     }
     return stream;
 }
-
-// brief/ conversion of MPZ interval [begin,end] to factoradic interval [posV,endV]
-// void
-// work::BigintToVect(mpz_class begin, mpz_class end, int * posV, int * endV)
-// {
-//     mpz_class q(0);
-// 	mpz_class r(begin);
-//
-//     for (int i = pbb->size; i > 0; i--){
-//         mpz_tdiv_qr(q.get_mpz_t(), r.get_mpz_t(), r.get_mpz_t(), pbb->wghts->depth[pbb->size - i + 1].get_mpz_t());
-//         posV[pbb->size - i] = q.get_ui();
-//     }
-//     r=end;
-// 	for(int i = pbb->size; i > 0; i--){
-//         mpz_tdiv_qr(q.get_mpz_t(), r.get_mpz_t(), r.get_mpz_t(), pbb->wghts->depth[pbb->size - i + 1].get_mpz_t());
-//         endV[pbb->size - i] = q.get_ui();
-//     }
-// }
-//
-// void
-// work::VectToBigint(const int * posV, const int * endV, mpz_class &begin, mpz_class &end)
-// {
-//     begin = 0;
-//     end   = 0;
-//
-//     for (int i = pbb->size - 1; i >= 0; i--) {
-//         begin += pbb->wghts->W[i + 1][posV[i]];
-//         end   += pbb->wghts->W[i + 1][endV[i]];// *mpz_class(endV[i]);
-//     }
-//     //std::cout<<begin<<" "<<end<<std::endl;
-// }
-
 
 size_t
 work::readFromFile(FILE * bp)

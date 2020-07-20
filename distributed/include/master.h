@@ -9,13 +9,9 @@
 #include "gmp.h"
 #include "gmpxx.h"
 
-
-
 class pbab;
 class work;
-// class fact_work;
 class works;
-// class solution;
 class communicator;
 
 class master{

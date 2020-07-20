@@ -23,10 +23,10 @@ master::master(pbab* _pbb){
 
     MPI_Comm_size(MPI_COMM_WORLD, &nProc);
 
-    comm = new communicator(MAX_INTERVALS,pbb);
+    comm = new communicator(MAX_INTERVALS,pbb->size);
     wrks = new works();
 
-    wrk = std::make_shared<work>(pbb);//(new work(pbb));
+    wrk = std::make_shared<work>();//(new work(pbb));
 
     reset();
 }

@@ -7,22 +7,17 @@
 #include "work.h"
 
 //construct communicator for M intervals of size pbb->size
-communicator::communicator(int _M,pbab* _pbb){
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-
-    pbb=_pbb;
-
-    M=_M;//nb of intervals
-    size=pbb->size;//problem size
-
-    dwork_buf = std::make_shared<work>(pbb);
-    best_buf = new solution(pbb->size);
-}
+// communicator::communicator(int _M,int _size){
+//     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+//
+//     // M=_M;//nb of intervals
+//     // size=pbb->size;//problem size
+// }
 //===============================================
-communicator::~communicator()
-{
-    delete best_buf;
-}
+// communicator::~communicator()
+// {
+//     // delete best_buf;
+// }
 //===============================================
 void communicator::send_work(std::shared_ptr<work> src_wrk, int dest, int tag)
 {

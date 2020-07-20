@@ -13,10 +13,9 @@
 #include "gmp.h"
 #include "gmpxx.h"
 
-class peer;
+
 class pbab;
 class interval;
-class weights;
 
 typedef std::shared_ptr<interval> INTERVAL_PTR;
 typedef std::vector<std::shared_ptr<interval>> INTERVAL_VEC;
@@ -25,17 +24,11 @@ typedef std::vector<std::shared_ptr<interval>>::iterator INTERVAL_IT;
 class work
 {
 public:
-    pbab*pbb;
-    // weights* wghts;
+    // pbab*pbb;
 
     //the DATA
     //work unit = set (union) of intervals...
     INTERVAL_VEC Uinterval; //...as decimals
-
-    // int *ids;     //... as factoradics
-    // int *pos;
-    // int *end;
-    // int *states;
 
     //the meta-data
     int id;//work ID
@@ -51,9 +44,9 @@ public:
     // time_t timeSinceLastUpdate; // Dernière date de mise à jour, utilisé par le coordinateur et le processus B&B
 
     //Constructeurs
-    work(pbab*pbb);
+    work();
     work(const work &w);
-    work(pbab*pbb, std::istream& stream);
+    work(std::istream& stream);
 
     ~work();
 
@@ -91,7 +84,7 @@ public:
     //Gestion des variables membres
     void set_size();
     void set_time();
-    void set_peer(peer& p);
+    // void set_peer(peer& p);
     void set_finished();
     void set_null();
     void set_id();
