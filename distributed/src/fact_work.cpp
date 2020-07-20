@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "pbab.h"
 #include "log.h"
 
 #include "weights.h"
@@ -11,9 +10,8 @@
 class weights;
 
 // in case max is not known yet
-fact_work::fact_work(pbab * _pbb, int _size)
+fact_work::fact_work(int _size)
 {
-    pbb = _pbb;
     id  = 0;
     nb_intervals  = 0;
     pbsize        = _size;
@@ -21,12 +19,11 @@ fact_work::fact_work(pbab * _pbb, int _size)
     nb_leaves     = 0;
     max_intervals = 0;
 
-    wghts = new weights(pbb);
+    wghts = new weights(pbsize);
 }
 
-fact_work::fact_work(pbab * _pbb, int _max, int _size)
+fact_work::fact_work(int _max, int _size)
 {
-    pbb = _pbb;
     id  = 0;
 
     nb_intervals  = 0;
@@ -42,7 +39,7 @@ fact_work::fact_work(pbab * _pbb, int _max, int _size)
     nb_decomposed = 0;
     nb_leaves     = 0;
 
-    wghts = new weights(pbb);
+    wghts = new weights(pbsize);
 
     FILE_LOG(logDEBUG1) << "Work-buffer, MaxIntervals " << _max << " Bytes: " << 2 * _max * (pbsize + 1) * sizeof(int);
 }
@@ -53,21 +50,21 @@ fact_work::BigintToVect(mpz_class begin, mpz_class end, int * posV, int * endV)
     mpz_class q(0);
     mpz_class r(begin);
 
-    for (int i = pbb->size; i > 0; i--) {
-        mpz_tdiv_qr(q.get_mpz_t(), r.get_mpz_t(), r.get_mpz_t(), wghts->depth[pbb->size - i + 1].get_mpz_t());
-        posV[pbb->size - i] = q.get_ui();
+    for (int i = pbsize; i > 0; i--) {
+        mpz_tdiv_qr(q.get_mpz_t(), r.get_mpz_t(), r.get_mpz_t(), wghts->depth[pbsize - i + 1].get_mpz_t());
+        posV[pbsize - i] = q.get_ui();
     }
     r = end;
-    for (int i = pbb->size; i > 0; i--) {
-        mpz_tdiv_qr(q.get_mpz_t(), r.get_mpz_t(), r.get_mpz_t(), wghts->depth[pbb->size - i + 1].get_mpz_t());
-        endV[pbb->size - i] = q.get_ui();
+    for (int i = pbsize; i > 0; i--) {
+        mpz_tdiv_qr(q.get_mpz_t(), r.get_mpz_t(), r.get_mpz_t(), wghts->depth[pbsize - i + 1].get_mpz_t());
+        endV[pbsize - i] = q.get_ui();
     }
 
-    // for(int i=0;i<pbb->size;i++){
+    // for(int i=0;i<pbsize;i++){
     //  printf("%d ",posV[i]);
     // }
     // printf("\n");
-    // for(int i=0;i<pbb->size;i++){
+    // for(int i=0;i<pbsize;i++){
     //  printf("%d ",endV[i]);
     // }
     // printf("\n");
@@ -79,7 +76,7 @@ fact_work::VectToBigint(const int * posV, const int * endV, mpz_class &begin, mp
     begin = 0;
     end   = 0;
 
-    for (int i = pbb->size - 1; i >= 0; i--) {
+    for (int i = pbsize - 1; i >= 0; i--) {
         // std::cout<<posV[i]<<":::"<<endV[i]<<std::endl;
         // std::cout<<wghts->W[i + 1][posV[i]]<<":::"<<wghts->W[i + 1][endV[i]]<<std::endl;
         begin += wghts->W[i + 1][posV[i]];

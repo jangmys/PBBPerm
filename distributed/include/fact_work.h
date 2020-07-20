@@ -12,8 +12,6 @@ class weights;
 
 class fact_work{
 public:
-    pbab* pbb;
-
     int id;
     int nb_intervals;
     int max_intervals;
@@ -29,8 +27,8 @@ public:
 
     weights* wghts;
 
-    fact_work(pbab* _pbb,int _size);
-    fact_work(pbab* _pbb,int _max, int _size);
+    fact_work(int _size);
+    fact_work(int _max, int _size);
 
     void BigintToVect(mpz_class begin, mpz_class end, int * posV, int * endV);
     void VectToBigint(const int * posV, const int * endV, mpz_class &begin, mpz_class &end);

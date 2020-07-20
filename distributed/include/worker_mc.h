@@ -30,7 +30,7 @@ public:
         comm = new communicator(M, pbb);
         // printf("construct workermc %d %d\n",M,size);
 
-        work_buf = std::make_shared<fact_work>(pbb, M, size);
+        work_buf = std::make_shared<fact_work>(M, size);
         work_buf->max_intervals = M;
         work_buf->id = 0;
     };

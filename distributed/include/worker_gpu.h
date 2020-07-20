@@ -54,7 +54,7 @@ public:
         FILE_LOG(logDEBUG1) << "GPU Bound initialized";
 
         // for mpi calls...
-        work_buf = std::make_shared<fact_work>(pbb, M, size);
+        work_buf = std::make_shared<fact_work>(M, size);
         work_buf->max_intervals = M;
         work_buf->id = 0;
         #endif // ifdef USE_GPU
