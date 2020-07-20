@@ -59,7 +59,7 @@ public:
     void mixedBoundPrune(ivm* IVM);
 
     void boundNode(const ivm* IVM);
-    void boundLeaf(ivm* IVM);
+    bool boundLeaf(ivm* IVM);
 
     void boundRootWeak(ivm *IVM);
     void boundRootStrong(ivm *IVM);

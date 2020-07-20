@@ -235,17 +235,21 @@ ivm_bound::computeWeakBounds()
     // printf("\n");
 }
 
-void
+bool
 ivm_bound::boundLeaf(ivm* IVM)
 {
+    bool better=false;
+
     pbb->stats.leaves++;
 
     int cost;
     if(bound[STRONG])cost=bound[STRONG]->evalSolution(node->schedule);
     else cost=bound[WEAK]->evalSolution(node->schedule);
-    // printf("leaf %d\n",cost);
 
     if (!gtBest(cost)) {
+        better=true;
+        printf("leaf %d\n",cost);
+
         //update local best...
         local_best=cost;
         //...and global best (mutex)
@@ -254,7 +258,6 @@ ivm_bound::boundLeaf(ivm* IVM)
 
         //print new best solution (not for NQUEENS)
         if(arguments::printSolutions){
-
             IVM->displayVector(IVM->posVect);
             pbb->sltn->print();
         }
@@ -263,6 +266,8 @@ ivm_bound::boundLeaf(ivm* IVM)
     int pos = IVM->posVect[IVM->line];
     int job = IVM->jobMat[IVM->line * size + pos];
     IVM->jobMat[IVM->line * size + pos] = negative(job);
+
+    return better;
 }
 
 void
