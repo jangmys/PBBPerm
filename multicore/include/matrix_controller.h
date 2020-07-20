@@ -37,6 +37,8 @@ private:
     pbab* pbb;
 
 public:
+    volatile bool foundNew;
+
     matrix_controller(pbab* _pbb);
     ~matrix_controller();
 

@@ -40,6 +40,8 @@ public:
     int size;
     int initialUB;
 
+    bool localFoundNew;
+
     executionmode execmode;
 
     bound_abstract * bound;
