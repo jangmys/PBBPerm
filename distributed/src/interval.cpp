@@ -1,25 +1,10 @@
 #include "interval.h"
 
-//"null"-interval
-interval::interval()
-{
-    this->begin = mpz_class(0);
-    this->end   = mpz_class(0);
-    this->id    = 0;
-}
-
 interval::interval(const interval& i)
 {
     this->begin = i.begin;;
     this->end   = i.end;
     this->id    = i.id;
-}
-
-interval::interval(mpz_class _begin, mpz_class _end, int _id)
-{
-    this->begin = _begin;
-    this->end   = _end;
-    this->id    = _id;
 }
 
 interval::interval(std::string b,std::string e, std::string _id){

@@ -7,19 +7,16 @@
 #include "gmp.h"
 #include "gmpxx.h"
 
-class weights;
-
 class interval {
 public:
-  interval();
-  interval(mpz_class begin, mpz_class end,int id);
+  interval() = default;
+  interval(mpz_class _begin, mpz_class _end,int _id) : begin(_begin),end(_end),id(_id){};
   interval(std::string b,std::string e, std::string _id);
   interval(const interval& i);
 
-  //an INTERVAL:
-  int id;
-  mpz_class begin;
-  mpz_class end;
+  mpz_class begin = mpz_class(0);
+  mpz_class end = mpz_class(0);
+  int id = 0;
 
   bool operator < (const interval& in) const
   { return (begin < in.begin);};
