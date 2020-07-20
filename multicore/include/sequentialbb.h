@@ -22,7 +22,7 @@ public:
     void run();
     void run(int* firstRow);
 
-    bool next();
+    bool next(bool &foundNew);
     void clear();
 
     ivm* IVM;
