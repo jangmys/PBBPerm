@@ -45,16 +45,20 @@ main(int argc, char ** argv)
 
     if (myrank == 0) {
         FILELog::ReportingLevel() = logINFO;
-        FILE* log_fd = fopen( "./logs/masterlogfile.txt", "w" );
+
+        char buf[100];
+        snprintf(buf, sizeof(buf), "./logs/%s_master.txt", arguments::inst_name);
+        FILE* log_fd = fopen( buf, "w" );
+        // FILE* log_fd = fopen( "./logs/%s_master.txt", "w" );
         Output2FILE::Stream() = log_fd;
     }else{
         FILELog::ReportingLevel() = logINFO;
         char buf[100];
-        snprintf(buf, sizeof(buf), "./logs/log_worker%d.txt", myrank);
+        snprintf(buf, sizeof(buf), "./logs/%s_worker%d.txt", arguments::inst_name, myrank);
         FILE* log_fd = fopen( buf, "w" );
         Output2FILE::Stream() = log_fd;
 
-        FILE_LOG(logDEBUG) << "Worker start logging";
+        FILE_LOG(logINFO) << "Worker start logging";
     }
 
     switch (bbmode) {
